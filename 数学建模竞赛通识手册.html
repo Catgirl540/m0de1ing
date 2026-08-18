@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数学建模竞赛论文写作通识手册</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Microsoft YaHei','Segoe UI',sans-serif;background:#f5f7fa;color:#2c3e50;line-height:1.8}
+  .cover{background:linear-gradient(135deg,#1a237e,#0d47a1,#01579b);color:#fff;padding:80px 40px;text-align:center}
+  .cover h1{font-size:36px;margin-bottom:12px;letter-spacing:3px}
+  .cover .subtitle{font-size:16px;opacity:.8;margin-bottom:24px}
+  .cover .tag{display:inline-block;padding:4px 16px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;font-size:12px}
+  .container{max-width:1000px;margin:0 auto;padding:40px 20px}
+  .toc{background:#fff;border-radius:12px;padding:30px;margin-bottom:30px;box-shadow:0 2px 12px rgba(0,0,0,.08)}
+  .toc h2{font-size:18px;color:#1a237e;border-bottom:2px solid #e3f2fd;padding-bottom:10px;margin-bottom:16px}
+  .toc ol{padding-left:24px;columns:2;column-gap:40px}
+  .toc li{margin-bottom:6px;line-height:1.6}
+  .toc a{color:#1565c0;text-decoration:none}
+  .toc a:hover{color:#0d47a1;text-decoration:underline}
+  section{background:#fff;border-radius:12px;padding:30px;margin-bottom:24px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+  h2{font-size:22px;color:#1a237e;border-left:4px solid #0d47a1;padding-left:12px;margin-bottom:16px}
+  h3{font-size:17px;color:#1565c0;margin:18px 0 10px;padding-bottom:4px;border-bottom:1px dashed #bbdefb}
+  h4{font-size:15px;color:#37474f;margin:12px 0 8px}
+  p{margin-bottom:10px}
+  ul,ol{padding-left:20px;margin-bottom:10px}
+  li{margin-bottom:6px}
+  .highlight{background:#fff3e0;padding:12px 16px;border-left:3px solid #ff9800;border-radius:4px;margin:10px 0;font-size:14px}
+  .tip{background:#e8f5e9;padding:12px 16px;border-left:3px solid #4caf50;border-radius:4px;margin:10px 0;font-size:14px}
+  .warn{background:#ffebee;padding:12px 16px;border-left:3px solid #f44336;border-radius:4px;margin:10px 0;font-size:14px}
+  .code{background:#263238;color:#eceff1;padding:14px 18px;border-radius:6px;font-family:Consolas,Monaco,monospace;font-size:13px;overflow-x:auto;margin:10px 0}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+  th{background:#1a237e;color:#fff;padding:8px 10px;text-align:left;font-weight:600}
+  td{padding:8px 10px;border:1px solid #e0e0e0}
+  tr:nth-child(even) td{background:#f5f5f5}
+  .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600}
+  .badge-red{background:#ffebee;color:#c62828}
+  .badge-green{background:#e8f5e9;color:#2e7d32}
+  .badge-blue{background:#e3f2fd;color:#1565c0}
+  .badge-orange{background:#fff3e0;color:#e65100}
+  .badge-purple{background:#f3e5f5;color:#6a1b9a}
+  .timeline{display:flex;gap:0;margin:16px 0;flex-wrap:wrap}
+  .tl-item{flex:1;min-width:120px;background:#e3f2fd;border-radius:8px;padding:12px;margin:0 4px 8px;text-align:center}
+  .tl-item .day{font-size:18px;font-weight:700;color:#0d47a1}
+  .tl-item .task{font-size:12px;color:#37474f;margin-top:4px}
+  .formula{background:#fafafa;border:1px solid #e0e0e0;padding:12px 16px;border-radius:4px;text-align:center;font-style:italic;margin:10px 0;font-family:'Times New Roman',serif}
+  .abstract-box{background:#fffde7;border:2px solid #fdd835;border-radius:8px;padding:20px;margin:16px 0}
+  .abstract-box h3{border:none;margin-top:0}
+  .abstract-box .schema{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+  .abstract-box .schema div{background:#fff;padding:10px;border-radius:6px;border:1px solid #e0e0e0;font-size:13px}
+  .abstract-box .schema strong{color:#e65100}
+  .footer{text-align:center;padding:30px;color:#90a4ae;font-size:12px}
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <h1>数学建模竞赛论文写作通识手册</h1>
+  <p class="subtitle">从零开始的论文手完全指南 · 格式规范 · 知识框架 · 算法速查 · 范例解析</p>
+  <span class="tag">CUMCM 国赛专用</span>
+  <span class="tag">2026年最新格式规范</span>
+  <span class="tag">论文手必读</span>
+</div>
+
+<div class="container">
+
+<!-- TOC -->
+<div class="toc">
+  <h2>目录</h2>
+  <ol>
+    <li><a href="#s1">竞赛概况与论文手角色</a></li>
+    <li><a href="#s2">论文格式规范（2026年官方修订版）</a></li>
+    <li><a href="#s3">论文黄金结构：七段式写作框架</a></li>
+    <li><a href="#s4">摘要写作：决定生死的半页纸</a></li>
+    <li><a href="#s5">数学建模知识体系总览</a></li>
+    <li><a href="#s6">评价模型：打分排名怎么做</a></li>
+    <li><a href="#s7">预测模型：猜未来用什么方法</a></li>
+    <li><a href="#s8">优化模型：找最优解的工具箱</a></li>
+    <li><a href="#s9">分类聚类模型：分组归类的方法</a></li>
+    <li><a href="#s10">图论与其他模型</a></li>
+    <li><a href="#s11">算法选择决策树</a></li>
+    <li><a href="#s12">优秀范例解析</a></li>
+    <li><a href="#s13">论文写作技巧与排版规范</a></li>
+    <li><a href="#s14">常见致命错误清单</a></li>
+    <li><a href="#s15">三天比赛时间规划</a></li>
+    <li><a href="#s16">工具软件与资源清单</a></li>
+  </ol>
+</div>
+
+<!-- Section 1 -->
+<section id="s1">
+<h2>一、竞赛概况与论文手角色</h2>
+
+<h3>1.1 竞赛是什么</h3>
+<p>全国大学生数学建模竞赛（CUMCM）是中国工业与应用数学学会主办的面向全国大学生的群众性科技活动，每年9月举行，三人一队，三天三夜完成一篇包含模型建立、求解和讨论的完整论文。竞赛分本科组和专科组，题目分A题（偏连续/数学物理）、B题（偏离散/优化/数据分析）、C题（偏大数据/统计）三选一。</p>
+
+<h3>1.2 论文手的角色定位</h3>
+<p>三人队伍通常分工为<strong>建模手</strong>（负责数学模型设计和算法选择）、<strong>编程手</strong>（负责代码实现和数据处理）、<strong>论文手</strong>（负责论文撰写、图表制作和排版）。但这个分工不是绝对的——论文手必须<strong>全程参与建模讨论</strong>，否则无法写出有深度的论文。</p>
+
+<div class="highlight">
+<strong>论文手的核心职责：</strong>
+<ul>
+<li>第一天：通读赛题、查阅文献、搭建论文框架（摘要→问题重述→模型假设→符号说明）</li>
+<li>第二天：同步建模进度、撰写模型建立与求解过程、制作图表</li>
+<li>第三天：完善模型检验与灵敏度分析、写模型评价与推广、<strong>精修摘要（最后2小时必须留给摘要）</strong>、排版检查</li>
+</ul>
+</div>
+
+<div class="tip">
+<strong>论文手最重要的认知：</strong>评委首先看摘要，如果摘要不过关，正文再好也可能被淘汰。摘要不是"最后随便写写的总结"，而是全文最核心的部分——它必须在半页纸内告诉评委"你们解决了什么问题、用了什么方法、得到什么结果、有什么创新"。
+</div>
+</section>
+
+<!-- Section 2 -->
+<section id="s2">
+<h2>二、论文格式规范（2026年官方修订版）</h2>
+
+<p>以下内容依据全国大学生数学建模竞赛组委会2026年3月3日发布的最新格式规范 <a href="https://www.mcm.edu.cn/html_cn/node/4cd596519c9eb9fbd866398f6df0caa3.html" target="_blank">[官方原文]</a>。</p>
+
+<h3>2.1 纸质版论文结构（共四部分）</h3>
+<table>
+<tbody><tr><th>页码</th><th>内容</th><th>要求</th></tr>
+<tr><td>第1页</td><td>承诺书</td><td>所有队员签名，手写或打印均可</td></tr>
+<tr><td>第2页</td><td>编号专用页</td><td>由赛区组委会填写，参赛队不需要填写</td></tr>
+<tr><td>第3页</td><td>摘要专用页</td><td>含标题、关键词，整页不超过一页，页码从"1"开始</td></tr>
+<tr><td>第4页起</td><td>正文</td><td>不要目录，不超过30页</td></tr>
+<tr><td>正文之后</td><td>附录</td><td>页数不限，必须包含全部可运行源程序代码</td></tr>
+</tbody></table>
+
+<h3>2.2 八条铁律</h3>
+<table>
+<tbody><tr><th>编号</th><th>规则</th><th>违反后果</th></tr>
+<tr><td>第1条</td><td>A4纸打印，页边距至少2.5cm，左侧装订</td><td>视为违规</td></tr>
+<tr><td>第3条</td><td>摘要不超过一页（含标题和关键词）</td><td>影响评审</td></tr>
+<tr><td>第4条</td><td>正文不超过30页，不要目录</td><td>影响评审</td></tr>
+<tr><td>第5条</td><td>附录必须包含全部完整可运行源代码</td><td><strong>取消评奖资格</strong></td></tr>
+<tr><td>第6条</td><td>全文任何位置不得出现学校、姓名等身份信息</td><td><strong>取消评奖资格</strong></td></tr>
+<tr><td>第7条</td><td>引用他人成果必须列出参考文献并标注</td><td>影响评审</td></tr>
+<tr><td>第9条</td><td>电子版必须与纸质版完全一致，PDF或Word格式，不超过20MB</td><td>影响提交</td></tr>
+<tr><td>第10条</td><td>电子版第一页必须是摘要（不含承诺书和编号页）</td><td>影响提交</td></tr>
+</tbody></table>
+
+<div class="warn">
+<strong>最容易踩坑的两条：</strong>
+<ol>
+<li><strong>缺源码/代码不可运行 = 直接取消评奖资格。</strong>必须在附录中放全部可运行代码，包括EXCEL、SPSS的交互命令也要写。如果确实没用到程序，必须明确写"本论文没有用到程序"。</li>
+<li><strong>出现身份信息 = 直接取消评奖资格。</strong>包括代码注释中的作者名、文件名中的学号、图表中的学校水印——全部不能有。</li>
+</ol>
+</div>
+
+<h3>2.3 电子版提交规范</h3>
+<ul>
+<li>提交两个文件：①论文PDF/Word（≤20MB）  ②支撑材料压缩包（RAR/ZIP，≤20MB）</li>
+<li>论文不要压缩，直接提交PDF</li>
+<li>支撑材料含：全部可运行源程序、自主查阅的数据、较大篇幅图表</li>
+<li>支撑材料文件列表必须在论文附录中列出</li>
+</ul>
+</section>
+
+<!-- Section 3 -->
+<section id="s3">
+<h2>三、论文黄金结构：七段式写作框架</h2>
+
+<p>国赛论文遵循"七段式黄金结构"，每一段都有明确的写作目标和内容要求。</p>
+
+<table>
+<tbody><tr><th>序号</th><th>结构</th><th>核心任务</th><th>篇幅建议</th></tr>
+<tr><td>1</td><td><strong>摘要</strong></td><td>全文精华浓缩：问题+方法+结果+创新点</td><td>半页~一页</td></tr>
+<tr><td>2</td><td><strong>问题重述</strong></td><td>用数学语言转译题目背景，明确目标与约束</td><td>1-2页</td></tr>
+<tr><td>3</td><td><strong>模型假设</strong></td><td>逐条列出并说明合理性（如"忽略空气阻力"需给出依据）</td><td>半页</td></tr>
+<tr><td>4</td><td><strong>符号说明</strong></td><td>表格列出全文所有变量符号及含义</td><td>半页</td></tr>
+<tr><td>5</td><td><strong>模型建立与求解</strong></td><td>核心部分：数学推导+算法实现+结果展示</td><td>15-20页</td></tr>
+<tr><td>6</td><td><strong>模型检验与灵敏度分析</strong></td><td>验证模型合理性，分析参数变化的影响</td><td>2-3页</td></tr>
+<tr><td>7</td><td><strong>模型评价与推广</strong></td><td>优缺点分析+可推广到哪些场景</td><td>1-2页</td></tr>
+</tbody></table>
+
+<h3>3.1 各结构详细写作指南</h3>
+
+<h4>问题重述</h4>
+<p>不是照抄题目原文，而是<strong>用你自己的数学语言重新表述</strong>。要把一个文字描述的实际问题，翻译成"已知什么、求什么、约束是什么"的数学问题。这一步做好了，后面建模才有清晰的方向。</p>
+<div class="tip"><strong>写法示例：</strong>"问题一要求在给定N个配送点和M辆车的条件下，找到使总配送成本最小的车辆调度方案。决策变量为车辆路径分配，目标函数为总运输距离，约束条件包括车辆容量限制、时间窗限制和每辆车必须返回起点。"</div>
+
+<h4>模型假设</h4>
+<p>每一条假设都要<strong>说明为什么可以这么假设</strong>。不能只写"假设不考虑天气影响"——要写"假设不考虑天气影响，因题目未提供气象数据且配送周期较短（3天），天气波动对单次配送影响可忽略"。</p>
+
+<h4>符号说明</h4>
+<p>用三列表格：符号 | 含义 | 单位。全文所有符号必须统一，不能在模型一用$x$表示距离，到模型二又用$x$表示时间。</p>
+
+<h4>模型建立与求解</h4>
+<p>这是论文主体，每个子问题按"<strong>建模→求解→结果</strong>"三步写：</p>
+<ol>
+<li><strong>建模</strong>：数学公式推导，从假设到模型建立的过程，要有逻辑链</li>
+<li><strong>求解</strong>：说明用什么算法/软件求解，给出关键求解步骤</li>
+<li><strong>结果</strong>：用表格和图表展示结果，并文字解读结果含义</li>
+</ol>
+
+<h4>模型检验与灵敏度分析</h4>
+<p>这是区分普通论文和优秀论文的关键。评委要看你是否验证了模型的可靠性。常见做法：</p>
+<ul>
+<li>改变参数值，观察结果变化幅度（灵敏度分析）</li>
+<li>与已知结果/常识对比验证</li>
+<li>误差分析：计算模型值与实际值的偏差</li>
+<li>稳定性检验：换一组数据看模型是否仍然适用</li>
+</ul>
+
+<h4>模型评价与推广</h4>
+<p>分三部分写：①优点（模型有什么亮点）②缺点（有哪些局限性）③推广（可以应用到哪些其他场景）。这一部分体现建模者的思维深度。</p>
+</section>
+
+<!-- Section 4 -->
+<section id="s4">
+<h2>四、摘要写作：决定生死的半页纸</h2>
+
+<div class="abstract-box">
+<h3>摘要黄金模板</h3>
+<p>摘要必须包含以下要素，缺一不可：</p>
+<div class="schema">
+<div><strong>①问题背景</strong>：一句话说清针对什么问题建模</div>
+<div><strong>②核心方法</strong>：每个子问题用了什么模型/算法</div>
+<div><strong>③关键结果</strong>：每个子问题的核心数值结果</div>
+<div><strong>④模型特色</strong>：创新点、亮点、特别之处</div>
+</div>
+</div>
+
+<h3>4.1 摘要写作示例</h3>
+<div class="code">
+本文针对XXXX问题，建立了XXX模型并进行了求解。
+
+针对问题一，本文首先对数据进行预处理（缺失值填补/异常值剔除），
+建立了基于XXX的XXX模型。采用XXX算法求解，得到XXXX结果为
+[具体数值]，该结果表明[一句话解读]。
+
+针对问题二，在问题一的基础上，引入XXX因素，建立了XXX优化模型。
+采用XXX算法（如遗传算法/蒙特卡洛模拟）求解，得到最优方案为
+[具体方案]，目标函数值为[具体数值]。
+
+针对问题三，采用XXX方法进行XXX分析，得到XXX结论。
+
+本文模型的特色在于：①[创新点1]；②[创新点2]；
+③[创新点3，如做了灵敏度分析/模型检验]。
+
+关键词：关键词1；关键词2；关键词3；关键词4；关键词5
+</div>
+
+<div class="warn">
+<strong>摘要五不准：</strong>
+<ol>
+<li>不准超过一页（含标题和关键词）</li>
+<li>不准只写"本文解决了XX问题"而不给具体结果</li>
+<li>不准出现图表（摘要纯文字）</li>
+<li>不准出现学校、姓名等身份信息</li>
+<li>不准用"本文采用了一些方法"这种模糊表述——必须写明具体模型名称</li>
+</ol>
+</div>
+
+<div class="tip">
+<strong>摘要写作顺序建议：</strong>不要一开始就写摘要！先写正文，把所有模型和结果都跑出来、写完后，最后花<strong>至少2小时</strong>专门打磨摘要。把每个子问题的最核心方法、最核心结果提炼出来，用最精炼的语言串成半页纸。
+</div>
+</section>
+
+<!-- Section 5 -->
+<section id="s5">
+<h2>五、数学建模知识体系总览</h2>
+
+<p>数学建模的模型可以分为<strong>四大类</strong>，几乎所有国赛题目都可以归入其中一类或多类的组合。</p>
+
+<table>
+<tbody><tr><th>模型大类</th><th>核心任务</th><th>典型问题</th><th>常用方法</th></tr>
+<tr><td><span class="badge badge-blue">评价模型</span></td><td>打分、排名、综合评估</td><td>"哪个方案最好""评价XX的水平"</td><td>AHP、熵权法、TOPSIS、模糊综合评价</td></tr>
+<tr><td><span class="badge badge-green">预测模型</span></td><td>根据已知数据推测未来/未知值</td><td>"预测未来几年XX""推测XX趋势"</td><td>回归、灰色预测、神经网络、时间序列</td></tr>
+<tr><td><span class="badge badge-orange">优化模型</span></td><td>在约束条件下找最优方案</td><td>"如何分配使成本最低""最优调度"</td><td>线性/非线性规划、整数规划、动态规划、智能优化</td></tr>
+<tr><td><span class="badge badge-purple">分类聚类</span></td><td>把数据分组或判断归属</td><td>"将XX分类""判断属于哪一类"</td><td>K-means、SVM、判别分析、决策树</td></tr>
+</tbody></table>
+
+<h3>5.1 速记口诀</h3>
+<div class="highlight">
+<ol>
+<li><strong>打分排名</strong>：AHP主观、熵权法客观、TOPSIS综合排序</li>
+<li><strong>数据少猜未来</strong>：灰色预测GM(1,1)</li>
+<li><strong>时间一串数据预测</strong>：ARIMA时间序列</li>
+<li><strong>找因果、影响因素</strong>：回归分析</li>
+<li><strong>数据多复杂预测</strong>：BP神经网络</li>
+<li><strong>省钱赚钱、资源分配</strong>：线性/非线性规划</li>
+<li><strong>车辆人员选址排班</strong>：整数规划</li>
+<li><strong>自动分组归类</strong>：K-means聚类</li>
+<li><strong>两点最短路</strong>：Dijkstra算法</li>
+<li><strong>复杂大坑最优解</strong>：遗传算法</li>
+</ol>
+</div>
+</section>
+
+<!-- Section 6 -->
+<section id="s6">
+<h2>六、评价模型：打分排名怎么做</h2>
+
+<p>评价模型是国赛最常考的模型类型之一，B题和C题中大量出现"评价""排序""综合评估"的要求。</p>
+
+<table>
+<tbody><tr><th>方法</th><th>一句话理解</th><th>数据需求</th><th>适用场景</th><th>优缺点</th></tr>
+<tr><td><strong>层次分析法（AHP）</strong></td><td>主观打分拆指标算权重</td><td>少（无需大量数据）</td><td>校园食堂满意度、供应商排序</td><td>+简单易懂；-主观性强，一致性可能不通过</td></tr>
+<tr><td><strong>熵权法</strong></td><td>纯客观，靠数据差异自动算权重</td><td>多（需大量统计）</td><td>各省经济发展水平评价</td><td>+客观无偏；-无法反映指标重要性</td></tr>
+<tr><td><strong>TOPSIS法</strong></td><td>算方案与最优/最差解的距离排序</td><td>中/多</td><td>地区宜居排名、车型对比</td><td>+直观；-对异常值敏感</td></tr>
+<tr><td><strong>模糊综合评价</strong></td><td>用模糊隶属度处理"比较好""还行"等模糊评价</td><td>少</td><td>服务质量评价、风险等级评估</td><td>+处理模糊信息；-隶属度函数选择主观</td></tr>
+<tr><td><strong>灰色关联分析</strong></td><td>算各方案与参考序列的关联度排序</td><td>少</td><td>方案优选、因素影响分析</td><td>+小样本可用；-参考序列选择影响大</td></tr>
+</tbody></table>
+
+<div class="tip">
+<strong>国赛常见组合：</strong>AHP（主观定权重）+ 熵权法（客观定权重）→ 组合权重 → TOPSIS排序。这种"主客观组合+TOPSIS"的写法在国赛中非常常见且容易得高分，因为它兼顾了主观经验和客观数据。
+</div>
+
+<h3>6.1 AHP层次分析法操作步骤</h3>
+<ol>
+<li><strong>建立层次结构</strong>：目标层→准则层→方案层</li>
+<li><strong>构造判断矩阵</strong>：两两比较各指标重要性（1-9标度法）</li>
+<li><strong>计算权重</strong>：求判断矩阵最大特征值对应的特征向量</li>
+<li><strong>一致性检验</strong>：计算CR = CI/RI，CR&lt;0.1则通过</li>
+<li><strong>层次总排序</strong>：计算各方案的综合得分</li>
+</ol>
+<div class="formula">CI = (λ<sub>max</sub> - n) / (n - 1)，CR = CI / RI，当 CR &lt; 0.1 时一致性可接受</div>
+</section>
+
+<!-- Section 7 -->
+<section id="s7">
+<h2>七、预测模型：猜未来用什么方法</h2>
+
+<table>
+<tbody><tr><th>方法</th><th>一句话理解</th><th>数据需求</th><th>适用场景</th><th>关键要点</th></tr>
+<tr><td><strong>灰色预测GM(1,1)</strong></td><td>数据少也能预测</td><td>少（≥4个）</td><td>粮食产量、用电量预测</td><td>需做后验差检验（P值和C值）</td></tr>
+<tr><td><strong>回归分析</strong></td><td>找变量因果关系+预测</td><td>多</td><td>房价因素分析、气温对销量</td><td>需检验R²、P值、残差分析</td></tr>
+<tr><td><strong>BP神经网络</strong></td><td>黑箱模型自动拟合</td><td>多（大）</td><td>客流量、污染物浓度预测</td><td>需划分训练集/测试集，防过拟合</td></tr>
+<tr><td><strong>ARIMA时间序列</strong></td><td>处理随时间变化的数据</td><td>多（连续）</td><td>历年GDP、每月降雨量</td><td>需做平稳性检验（ADF）和差分</td></tr>
+<tr><td><strong>马尔可夫链</strong></td><td>状态转移概率预测</td><td>中</td><td>股市走势、天气状态转移</td><td>需满足无记忆性假设</td></tr>
+</tbody></table>
+
+<div class="highlight">
+<strong>选择决策：</strong>
+<ul>
+<li>数据只有4-10个 → <strong>灰色预测</strong></li>
+<li>数据多且有明确影响因素 → <strong>回归分析</strong>（多元线性回归/非线性回归）</li>
+<li>数据多但关系复杂、非线性 → <strong>BP神经网络</strong></li>
+<li>数据是时间序列（按月/年排列） → <strong>ARIMA</strong></li>
+<li>需要预测状态转移 → <strong>马尔可夫链</strong></li>
+</ul>
+</div>
+
+<h3>7.1 灰色预测GM(1,1)操作步骤</h3>
+<ol>
+<li><strong>累加生成</strong>：对原始序列X⁽⁰⁾做一次累加生成X⁽¹⁾</li>
+<li><strong>构造矩阵</strong>：建立白化微分方程 dx⁽¹⁾/dt + ax⁽¹⁾ = b</li>
+<li><strong>参数估计</strong>：最小二乘法求a和b</li>
+<li><strong>预测公式</strong>：x̂⁽¹⁾(k+1) = [x⁽⁰⁾(1) - b/a]·e⁻ᵃᵏ + b/a</li>
+<li><strong>累减还原</strong>：x̂⁽⁰⁾(k+1) = x̂⁽¹⁾(k+1) - x̂⁽¹⁾(k)</li>
+<li><strong>后验差检验</strong>：计算后验差比值C和小误差概率P</li>
+</ol>
+<div class="formula">精度等级判定：P&gt;0.95且C&lt;0.35为优（一级）；P&gt;0.80且C&lt;0.50为合格（二级）</div>
+</section>
+
+<!-- Section 8 -->
+<section id="s8">
+<h2>八、优化模型：找最优解的工具箱</h2>
+
+<p>优化模型是国赛A题和B题的核心。几乎每年都有"如何分配""如何调度""如何安排"的问题，本质都是在约束条件下求最优解。</p>
+
+<table>
+<tbody><tr><th>方法</th><th>一句话理解</th><th>适用场景</th><th>求解工具</th></tr>
+<tr><td><strong>线性规划（LP）</strong></td><td>变量关系为直线，求最大/最小值</td><td>工厂原料分配、运输运费最少</td><td>MATLAB linprog / Python PuLP</td></tr>
+<tr><td><strong>非线性规划（NLP）</strong></td><td>变量关系非直线，约束更复杂</td><td>电网功率调度、投资组合优化</td><td>MATLAB fmincon / Python scipy</td></tr>
+<tr><td><strong>整数规划（IP）</strong></td><td>结果必须是整数（人、车、设备数）</td><td>救护车站点选址、人员排班</td><td>MATLAB intlinprog / Gurobi</td></tr>
+<tr><td><strong>0-1规划</strong></td><td>决策只有"选/不选"两种</td><td>选址问题、背包问题、投资选择</td><td>MATLAB bintprog / Gurobi</td></tr>
+<tr><td><strong>动态规划（DP）</strong></td><td>拆大问题为小问题，分阶段求最优</td><td>最短路径、背包问题、多年投资</td><td>手推+代码实现</td></tr>
+<tr><td><strong>多目标规划</strong></td><td>同时优化多个目标</td><td>成本最低+效率最高+风险最小</td><td>加权求和法/Pareto最优/NSGA-II</td></tr>
+<tr><td><strong>遗传算法（GA）</strong></td><td>模仿生物进化暴力搜索最优解</td><td>NP-hard问题、复杂组合优化</td><td>MATLAB ga / Python DEAP</td></tr>
+<tr><td><strong>模拟退火（SA）</strong></td><td>模仿金属退火过程搜索最优</td><td>旅行商问题（TSP）、调度优化</td><td>Python scipy.optimize</td></tr>
+<tr><td><strong>粒子群算法（PSO）</strong></td><td>模仿鸟群觅食搜索最优</td><td>连续空间优化、参数调优</td><td>Python pyswarm</td></tr>
+</tbody></table>
+
+<div class="tip">
+<strong>优化模型写作要点：</strong>必须明确写出三要素：①决策变量是什么 ②目标函数是什么 ③约束条件是什么。这是评委评分的基本依据。即使最后用启发式算法求解，也要先建立数学规划模型。
+</div>
+
+<h3>8.1 线性规划标准写法</h3>
+<div class="code">
+决策变量：设 xᵢⱼ 表示第i辆车分配到第j个配送点的货物量
+
+目标函数：min Z = Σᵢ Σⱼ cᵢⱼ · xᵢⱼ  （总运输成本最小）
+
+约束条件：
+  (1) Σⱼ xᵢⱼ ≤ Qᵢ           （车辆容量约束）
+  (2) Σᵢ xᵢⱼ ≥ dⱼ           （需求满足约束）
+  (3) xᵢⱼ ≥ 0                 （非负约束）
+</div>
+</section>
+
+<!-- Section 9 -->
+<section id="s9">
+<h2>九、分类聚类模型：分组归类的方法</h2>
+
+<table>
+<tbody><tr><th>方法</th><th>类型</th><th>一句话理解</th><th>适用场景</th></tr>
+<tr><td><strong>K-means聚类</strong></td><td>无监督</td><td>自动把相似数据分K堆</td><td>省份发展水平分群、客户分群</td></tr>
+<tr><td><strong>系统聚类（层次聚类）</strong></td><td>无监督</td><td>从个体合并相似项，出树状图</td><td>植物品种分类、城市层级划分</td></tr>
+<tr><td><strong>SVM支持向量机</strong></td><td>有监督</td><td>找最优超平面分类</td><td>文本分类、图像识别</td></tr>
+<tr><td><strong>判别分析</strong></td><td>有监督</td><td>已知类别判断新样本归属</td><td>地震等级判别、肿瘤良恶性</td></tr>
+<tr><td><strong>逻辑回归</strong></td><td>有监督</td><td>二分类问题（是/否）</td><td>是否违约、是否患病预测</td></tr>
+<tr><td><strong>决策树/随机森林</strong></td><td>有监督</td><td>树形规则分类</td><td>客户流失预测、信用评估</td></tr>
+</tbody></table>
+
+<h3>9.1 分类模型评价指标</h3>
+<table>
+<tbody><tr><th>指标</th><th>含义</th><th>使用场景</th></tr>
+<tr><td>Accuracy（准确率）</td><td>正确预测占比</td><td>数据类别均衡时</td></tr>
+<tr><td>Precision（精确率）</td><td>正确预测正类占所有预测正类的比例</td><td>关注误报控制</td></tr>
+<tr><td>Recall（召回率）</td><td>正确预测正类占实际正类的比例</td><td>关注漏报</td></tr>
+<tr><td>F1值</td><td>Precision与Recall的调和平均</td><td>综合衡量性能</td></tr>
+<tr><td>ROC/AUC</td><td>不同阈值下TPR与FPR曲线及面积</td><td>类别不平衡场景</td></tr>
+</tbody></table>
+</section>
+
+<!-- Section 10 -->
+<section id="s10">
+<h2>十、图论与其他模型</h2>
+
+<h3>10.1 图论模型</h3>
+<table>
+<tbody><tr><th>算法</th><th>一句话理解</th><th>适用场景</th></tr>
+<tr><td><strong>Dijkstra算法</strong></td><td>求两点间最短路径</td><td>快递配送最短路线、景区游览路径</td></tr>
+<tr><td><strong>Floyd算法</strong></td><td>一次性算所有点间最短距离</td><td>城市间交通路网最短路径</td></tr>
+<tr><td><strong>最大流最小费用</strong></td><td>网络运输求最大运量+最低成本</td><td>管网输水、物流货运调度</td></tr>
+<tr><td><strong>最小生成树</strong></td><td>用最小成本连通所有节点</td><td>网络布线、管道铺设</td></tr>
+<tr><td><strong>旅行商问题（TSP）</strong></td><td>访问所有点再回到起点的最短路径</td><td>配送路线规划、巡检路线</td></tr>
+</tbody></table>
+
+<h3>10.2 其他常用模型</h3>
+<table>
+<tbody><tr><th>模型</th><th>一句话理解</th><th>适用场景</th></tr>
+<tr><td><strong>博弈论</strong></td><td>分析多方竞争下的最优策略</td><td>企业价格战、攻防策略分析</td></tr>
+<tr><td><strong>排队论（M/M/1等）</strong></td><td>分析排队拥堵和等待时间</td><td>医院挂号、食堂打饭窗口优化</td></tr>
+<tr><td><strong>元胞自动机</strong></td><td>模拟扩散、传播、演化过程</td><td>火灾蔓延、人群疏散、病毒扩散</td></tr>
+<tr><td><strong>微分方程模型</strong></td><td>描述连续变化过程</td><td>传染病SIR模型、人口增长</td></tr>
+<tr><td><strong>蒙特卡洛模拟</strong></td><td>随机采样模拟概率事件</td><td>风险评估、复杂系统模拟</td></tr>
+</tbody></table>
+</section>
+
+<!-- Section 11 -->
+<section id="s11">
+<h2>十一、算法选择决策树</h2>
+
+<p>拿到题目后，如何快速判断用什么方法？按照以下决策路径选择：</p>
+
+<div class="highlight">
+<h4>第一步：判断问题类型</h4>
+<ul>
+<li>题目要求"评价/排序/打分" → <strong>评价模型</strong>（AHP+熵权法+TOPSIS）</li>
+<li>题目要求"预测/估计/推测" → <strong>预测模型</strong>（看数据量选具体方法）</li>
+<li>题目要求"最优/最大/最小/安排/分配" → <strong>优化模型</strong>（看约束类型选具体方法）</li>
+<li>题目要求"分类/分群/判别" → <strong>分类聚类模型</strong>（看有无标签选具体方法）</li>
+<li>题目涉及"路径/网络/连通" → <strong>图论模型</strong></li>
+</ul>
+
+<h4>第二步：判断数据特征</h4>
+<ul>
+<li>数据量很少（&lt;10个） → 灰色预测、AHP、模糊评价</li>
+<li>数据量中等、有明确影响因素 → 回归分析、熵权法</li>
+<li>数据量大、关系复杂 → 神经网络、随机森林、深度学习</li>
+<li>数据是时间序列 → ARIMA、指数平滑</li>
+</ul>
+
+<h4>第三步：判断约束特征（优化类）</h4>
+<ul>
+<li>变量和约束都是线性的 → 线性规划</li>
+<li>变量必须整数 → 整数规划 / 0-1规划</li>
+<li>关系非线性 → 非线性规划</li>
+<li>多阶段决策 → 动态规划</li>
+<li>问题太复杂（NP-hard） → 遗传算法/模拟退火/粒子群</li>
+<li>多个目标要同时优化 → 多目标规划（加权/Pareto/NSGA-II）</li>
+</ul>
+</div>
+</section>
+
+<!-- Section 12 -->
+<section id="s12">
+<h2>十二、优秀范例解析</h2>
+
+<h3>12.1 经典国赛题型与获奖论文参考</h3>
+<table>
+<tbody><tr><th>年份</th><th>题目</th><th>类型</th><th>获奖论文核心方法</th><th>学习要点</th></tr>
+<tr><td>2023 A题</td><td>物流配送路径优化</td><td>优化</td><td>改进自适应遗传算法（动态交叉概率+自适应变异）</td><td>在标准算法上做"改进"是高分关键</td></tr>
+<tr><td>2024 B题</td><td>多目标资源调度决策</td><td>优化+概率</td><td>多目标优化+概率建模+启发式搜索</td><td>B题通常开放性强，无标准答案，重在逻辑闭环</td></tr>
+<tr><td>2023 C题</td><td>数据分析与预测</td><td>预测+评价</td><td>回归分析+ARIMA+综合评价</td><td>C题偏数据，数据处理是得分基础</td></tr>
+<tr><td>2020 A题</td><td>炉温曲线</td><td>优化+微分方程</td><td>差分方程+参数寻优+灵敏度分析</td><td>物理过程建模+优化参数的经典组合</td></tr>
+</tbody></table>
+
+<h3>12.2 优秀论文的共同特征</h3>
+<ol>
+<li><strong>摘要精炼有力</strong>：一页纸内说清问题、方法、结果、创新点</li>
+<li><strong>模型有"改进"或"创新"</strong>：不是直接套标准模型，而是在标准模型基础上做改进（如改进遗传算法、加权组合评价等）</li>
+<li><strong>结果有图表支撑</strong>：大量使用可视化图表（折线图、热力图、箱线图等）展示结果</li>
+<li><strong>做了灵敏度分析</strong>：分析参数变化对结果的影响，体现模型的稳定性</li>
+<li><strong>代码完整可运行</strong>：附录中代码结构清晰、有注释、可直接运行</li>
+<li><strong>排版整洁规范</strong>：公式编号统一、图表有编号和标题、符号全文统一</li>
+</ol>
+
+<h3>12.3 如何获取优秀论文</h3>
+<ul>
+<li>官方发布：<a href="https://www.mcm.edu.cn/" target="_blank">全国大学生数学建模竞赛官网</a> 每年会发布部分获一等奖论文</li>
+<li>书籍：西安电子科技大学出版社《数学建模竞赛优秀论文选》收录近十年一等奖和美赛特等奖论文</li>
+<li>国防工业出版社《全国大学生数学建模竞赛赛题与优秀论文评析》</li>
+<li>网络资源：CSDN、知乎、B站上有大量获奖论文分享和解析</li>
+</ul>
+</section>
+
+<!-- Section 13 -->
+<section id="s13">
+<h2>十三、论文写作技巧与排版规范</h2>
+
+<h3>13.1 公式排版</h3>
+<ul>
+<li>所有公式统一编号，如(1)、(2)、(3)，右对齐</li>
+<li>引用公式时用"由式(3)可知..."</li>
+<li>长公式可分多行排版，在+、-号处换行</li>
+<li>推荐使用MathType或Word自带公式编辑器</li>
+<li>LaTeX用户用 \begin{equation} \end{equation} 环境</li>
+</ul>
+
+<h3>13.2 图表规范</h3>
+<table>
+<tbody><tr><th>要素</th><th>要求</th></tr>
+<tr><td>编号</td><td>全文统一编号：图1、图2...；表1、表2...</td></tr>
+<tr><td>标题</td><td>图标题在图下方，表标题在表上方</td></tr>
+<tr><td>引用</td><td>正文中必须引用每个图表："如图3所示""结果见表2"</td></tr>
+<tr><td>质量</td><td>图表清晰、分辨率高，坐标轴有标签和单位</td></tr>
+<tr><td>配色</td><td>避免红绿色盲不友好配色，推荐蓝-橙-灰系</td></tr>
+</tbody></table>
+
+<h3>13.3 参考文献格式</h3>
+<div class="code">
+[1] 作者. 文章标题[J]. 期刊名, 年份, 卷(期): 起止页码.
+[2] 作者. 书名[M]. 出版地: 出版社, 年份.
+[3] 作者. 论文题目[D]. 学位授予单位, 年份.
+[4] 网页作者. 网页标题[EB/OL]. (发布日期)[引用日期]. URL.
+</div>
+
+<h3>13.4 写作语言风格</h3>
+<ul>
+<li>用<strong>第三人称客观叙述</strong>："本文建立了...""模型求解得到..."，不用"我/我们"</li>
+<li>用<strong>学术书面语</strong>，不用口语化表达</li>
+<li>每个结论都要有<strong>数据支撑</strong>，不能只说"结果较好"</li>
+<li>段落之间有<strong>逻辑过渡</strong>："在此基础上...""考虑到上述因素..."</li>
+</ul>
+</section>
+
+<!-- Section 14 -->
+<section id="s14">
+<h2>十四、常见致命错误清单</h2>
+
+<table>
+<tbody><tr><th>错误类型</th><th>表现</th><th>后果</th><th>如何避免</th></tr>
+<tr><td>缺源代码</td><td>附录没有代码或代码不完整</td><td><span class="badge badge-red">取消评奖</span></td><td>比赛结束前1小时专门检查代码完整性</td></tr>
+<tr><td>身份泄露</td><td>代码注释中有名字、文件名含学号</td><td><span class="badge badge-red">取消评奖</span></td><td>提交前全文搜索姓名、学号、学校名</td></tr>
+<tr><td>摘要空洞</td><td>只写"本文解决了XX问题"没有具体结果</td><td><span class="badge badge-orange">影响极大</span></td><td>摘要必须写具体方法和数值结果</td></tr>
+<tr><td>超页数</td><td>正文超过30页</td><td><span class="badge badge-orange">影响评审</span></td><td>精炼正文，多余内容移入附录</td></tr>
+<tr><td>模型无检验</td><td>只建模型不做验证和灵敏度分析</td><td><span class="badge badge-orange">影响评分</span></td><td>至少做一组参数变化的灵敏度分析</td></tr>
+<tr><td>公式无编号</td><td>公式不编号或编号混乱</td><td><span class="badge badge-blue">影响印象</span></td><td>所有展示公式统一右对齐编号</td></tr>
+<tr><td>图表无引用</td><td>放了图表但正文没有提到</td><td><span class="badge badge-blue">影响印象</span></td><td>每个图表都必须在正文中引用</td></tr>
+<tr><td>符号不统一</td><td>同一符号在不同位置含义不同</td><td><span class="badge badge-blue">影响印象</span></td><td>建立符号说明表，全文统一</td></tr>
+<tr><td>直接套模型</td><td>不加修改地使用标准模型</td><td><span class="badge badge-orange">影响评分</span></td><td>在标准模型基础上做"改进"或"组合"</td></tr>
+</tbody></table>
+</section>
+
+<!-- Section 15 -->
+<section id="s15">
+<h2>十五、三天比赛时间规划</h2>
+
+<div class="timeline">
+<div class="tl-item"><div class="day">Day 1</div><div class="task">选题+读题+文献+定方案</div></div>
+<div class="tl-item"><div class="day">Day 2</div><div class="task">建模+编程+跑结果+写正文</div></div>
+<div class="tl-item"><div class="day">Day 3</div><div class="task">检验+灵敏度+摘要+排版</div></div>
+</div>
+
+<h3>15.1 详细时间表</h3>
+<table>
+<tbody><tr><th>时间</th><th>建模手</th><th>编程手</th><th>论文手</th></tr>
+<tr><td><strong>D1 上午</strong></td><td>读题、讨论选题</td><td>读题、下载赛题数据</td><td>读题、查文献、搭框架</td></tr>
+<tr><td><strong>D1 下午</strong></td><td>确定模型方案</td><td>数据预处理、探索性分析</td><td>写问题重述、模型假设、符号说明</td></tr>
+<tr><td><strong>D1 晚上</strong></td><td>细化模型公式</td><td>实现第一个模型</td><td>写问题一模型建立部分</td></tr>
+<tr><td><strong>D2 上午</strong></td><td>问题二模型设计</td><td>跑问题一结果</td><td>写问题一求解与结果、做图表</td></tr>
+<tr><td><strong>D2 下午</strong></td><td>问题三模型设计</td><td>跑问题二结果</td><td>写问题二模型建立与求解</td></tr>
+<tr><td><strong>D2 晚上</strong></td><td>检查模型一致性</td><td>跑问题三结果</td><td>写问题三模型建立与求解</td></tr>
+<tr><td><strong>D3 上午</strong></td><td>灵敏度分析方案</td><td>跑灵敏度分析</td><td>写模型检验、模型评价与推广</td></tr>
+<tr><td><strong>D3 下午</strong></td><td>审阅全文</td><td>整理代码、检查可运行性</td><td><strong>精修摘要（至少2小时）</strong>、排版检查</td></tr>
+<tr><td><strong>D3 晚上</strong></td><td colspan="3">最终检查：格式→代码→匿名→PDF导出→提交</td></tr>
+</tbody></table>
+
+<div class="warn">
+<strong>最后3小时必做清单：</strong>
+<ol>
+<li>检查全文是否出现姓名/学校（搜索关键词）</li>
+<li>检查附录代码是否完整可运行</li>
+<li>检查摘要是否在一页以内、是否包含具体结果</li>
+<li>检查正文是否超过30页</li>
+<li>检查所有图表是否在正文中被引用</li>
+<li>检查参考文献是否标注完整</li>
+<li>导出PDF确认格式无错位</li>
+</ol>
+</div>
+</section>
+
+<!-- Section 16 -->
+<section id="s16">
+<h2>十六、工具软件与资源清单</h2>
+
+<h3>16.1 编程工具</h3>
+<table>
+<tbody><tr><th>工具</th><th>用途</th><th>推荐指数</th></tr>
+<tr><td>MATLAB</td><td>数值计算、优化求解、绘图</td><td>★★★★★（国赛最常用）</td></tr>
+<tr><td>Python</td><td>数据分析、机器学习、深度学习</td><td>★★★★★（C题必备）</td></tr>
+<tr><td>SPSS</td><td>统计分析、回归分析</td><td>★★★★（不编程也能用）</td></tr>
+<tr><td>LINGO</td><td>优化问题专用</td><td>★★★★（优化题利器）</td></tr>
+<tr><td>Excel</td><td>数据处理、简单分析</td><td>★★★（辅助工具）</td></tr>
+</tbody></table>
+
+<h3>16.2 绘图工具</h3>
+<table>
+<tbody><tr><th>工具</th><th>用途</th><th>特点</th></tr>
+<tr><td>MATLAB绘图</td><td>折线图、散点图、3D图</td><td>与代码一体化，最方便</td></tr>
+<tr><td>Python matplotlib/seaborn</td><td>数据可视化</td><td>灵活、美观</td></tr>
+<tr><td>Visio/Draw.io</td><td>流程图、层次结构图</td><td>论文流程图专用</td></tr>
+<tr><td>Tableau</td><td>交互式数据可视化</td><td>大数据量展示</td></tr>
+</tbody></table>
+
+<h3>16.3 论文排版工具</h3>
+<table>
+<tbody><tr><th>工具</th><th>特点</th><th>推荐场景</th></tr>
+<tr><td>Word + MathType</td><td>最常用，上手快</td><td>多数队伍首选</td></tr>
+<tr><td>LaTeX/Overleaf</td><td>公式排版美观，自动化</td><td>有LaTeX基础的队伍</td></tr>
+<tr><td>Typora + LaTeX</td><td>轻量级Markdown+公式</td><td>快速排版</td></tr>
+</tbody></table>
+
+<h3>16.4 学习资源</h3>
+<ul>
+<li><strong>官方：</strong><a href="https://www.mcm.edu.cn/" target="_blank">全国大学生数学建模竞赛官网</a> — 格式规范、历年赛题、获奖名单</li>
+<li><strong>书籍：</strong>《数学模型》（姜启源/谢金星）— 建模入门圣经</li>
+<li><strong>书籍：</strong>《数学建模算法与应用》— 算法+代码，实用性极强</li>
+<li><strong>视频：</strong>B站搜索"数学建模"系列教程（清风数学建模、数学建模老哥等UP主）</li>
+<li><strong>社区：</strong>CSDN、知乎"数学建模"话题，有大量获奖论文解析和代码分享</li>
+</ul>
+</section>
+
+<div class="footer">
+  <p>本手册基于全国大学生数学建模竞赛组委会2026年3月发布的最新格式规范编制 · 仅供学习参考</p>
+  <p>数据来源：CUMCM官网、CSDN、Acadwrite等公开资源</p>
+</div>
+
+</div>
+
+
+</body></html>
