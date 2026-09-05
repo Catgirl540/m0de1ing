@@ -1,0 +1,11 @@
+# Python
+__pycache__/
+*.pyc
+
+# Office 临时文件
+~$*
+*.tmp
+
+# 系统
+.DS_Store
+Thumbs.db
