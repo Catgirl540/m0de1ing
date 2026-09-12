@@ -1,0 +1,79 @@
+<mxfile host="Electron" agent="Codex" compressed="false">
+  <diagram id="page-1" name="问题四">
+    <mxGraphModel dx="1588" dy="908" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="930" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=25;fontStyle=1;fontFamily=Microsoft YaHei;labelBackgroundColor=none;" value="问题四模块架构：动态电价预测与双预测MPC耦合" vertex="1">
+          <mxGeometry height="48" width="1150" x="250" y="25" as="geometry" />
+        </mxCell>
+        <mxCell id="3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;strokeWidth=1.5;align=center;verticalAlign=middle;spacing=10;fontFamily=Microsoft YaHei;labelBackgroundColor=none;" value="&lt;div style=&quot;font-size:16px;font-weight:bold;color:#1D2933&quot;&gt;历史实时电价&lt;/div&gt;&lt;div style=&quot;height:9px&quot;&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px;line-height:1.45;color:#667580&quot;&gt;仅使用预测日前训练样本&lt;br&gt;参数化历史窗口，严格前向&lt;/div&gt;" vertex="1">
+          <mxGeometry height="145" width="220" x="25" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;strokeWidth=1.5;align=center;verticalAlign=middle;spacing=10;fontFamily=Microsoft YaHei;labelBackgroundColor=none;" value="&lt;div style=&quot;font-size:16px;font-weight:bold;color:#1D2933&quot;&gt;典型日加权&lt;/div&gt;&lt;div style=&quot;height:9px&quot;&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px;line-height:1.45;color:#667580&quot;&gt;7天半衰期&lt;br&gt;同星期样本权重×3&lt;/div&gt;" vertex="1">
+          <mxGeometry height="145" width="220" x="275" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;strokeWidth=1.5;align=center;verticalAlign=middle;spacing=10;fontFamily=Microsoft YaHei;labelBackgroundColor=none;" value="&lt;div style=&quot;font-size:16px;font-weight:bold;color:#1D2933&quot;&gt;傅里叶拟合&lt;/div&gt;&lt;div style=&quot;height:9px&quot;&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px;line-height:1.45;color:#667580&quot;&gt;提取日周期价格规律&lt;br&gt;傅里叶阶数由寻优确定&lt;/div&gt;" vertex="1">
+          <mxGeometry height="145" width="220" x="525" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;strokeWidth=1.5;align=center;verticalAlign=middle;spacing=10;fontFamily=Microsoft YaHei;labelBackgroundColor=none;" value="&lt;div style=&quot;font-size:16px;font-weight:bold;color:#1D2933&quot;&gt;小波残差重构&lt;/div&gt;&lt;div style=&quot;height:9px&quot;&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px;line-height:1.45;color:#667580&quot;&gt;补偿局部时段结构&lt;br&gt;小波阶数由寻优确定&lt;br&gt;正式方案不使用Hampel&lt;/div&gt;" vertex="1">
+          <mxGeometry height="145" width="220" x="775" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;strokeWidth=1.5;align=center;verticalAlign=middle;spacing=10;fontFamily=Microsoft YaHei;labelBackgroundColor=none;" value="&lt;div style=&quot;font-size: 16px; font-weight: bold; color: rgb(29, 41, 51);&quot;&gt;同刻偏差修正&lt;/div&gt;&lt;div style=&quot;height:9px&quot;&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 13px; line-height: 1.45; color: rgb(102, 117, 128);&quot;&gt;前日可用训练日同刻偏差&lt;br&gt;因果滚动校正与早停&lt;/div&gt;" vertex="1">
+          <mxGeometry height="145" width="220" x="1025" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="8" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;strokeWidth=1.5;align=center;verticalAlign=middle;spacing=10;fontFamily=Microsoft YaHei;labelBackgroundColor=none;" value="&lt;div style=&quot;font-size:16px;font-weight:bold;color:#1D2933&quot;&gt;非负截断&lt;/div&gt;&lt;div style=&quot;height:9px&quot;&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px;line-height:1.45;color:#667580&quot;&gt;形成当日及次日&lt;br&gt;价格预测曲线&lt;/div&gt;" vertex="1">
+          <mxGeometry height="145" width="220" x="1275" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;strokeWidth=1.5;align=center;verticalAlign=middle;spacing=10;fontFamily=Microsoft YaHei;labelBackgroundColor=none;" value="&lt;div style=&quot;font-size:16px;font-weight:bold;color:#1D2933&quot;&gt;负荷侧预测&lt;/div&gt;&lt;div style=&quot;height:9px&quot;&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px;line-height:1.45;color:#667580&quot;&gt;前向贝叶斯优化＋早停&lt;br&gt;年度谐波岭回归＋小波修正&lt;br&gt;风险储备＋日内因果修正&lt;/div&gt;" vertex="1">
+          <mxGeometry height="155" width="285" x="85" y="475" as="geometry" />
+        </mxCell>
+        <mxCell id="10" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;strokeWidth=1.5;align=center;verticalAlign=middle;spacing=10;fontFamily=Microsoft YaHei;labelBackgroundColor=none;" value="&lt;div style=&quot;font-size:16px;font-weight:bold;color:#1D2933&quot;&gt;价格－负荷双预测输入&lt;/div&gt;&lt;div style=&quot;height:9px&quot;&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px;line-height:1.45;color:#667580&quot;&gt;预测价格曲线&lt;br&gt;风险修正净负荷&lt;br&gt;当前SOC与已执行计划&lt;/div&gt;" vertex="1">
+          <mxGeometry height="195" width="320" x="450" y="455" as="geometry" />
+        </mxCell>
+        <mxCell id="11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;strokeWidth=1.5;align=center;verticalAlign=middle;spacing=10;fontFamily=Microsoft YaHei;labelBackgroundColor=none;" value="&lt;div style=&quot;font-size:16px;font-weight:bold;color:#1D2933&quot;&gt;动态电价MPC-LP&lt;/div&gt;&lt;div style=&quot;height:9px&quot;&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px;line-height:1.45;color:#667580&quot;&gt;最小化常规购电、调整和&lt;br&gt;紧急购电的实际价格成本&lt;br&gt;0/6/12/18时触发求解&lt;/div&gt;" vertex="1">
+          <mxGeometry height="235" width="325" x="865" y="435" as="geometry" />
+        </mxCell>
+        <mxCell id="12" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;strokeWidth=1.5;align=center;verticalAlign=middle;spacing=10;fontFamily=Microsoft YaHei;labelBackgroundColor=none;" value="&lt;div style=&quot;font-size:16px;font-weight:bold;color:#1D2933&quot;&gt;输出与评价&lt;/div&gt;&lt;div style=&quot;height:9px&quot;&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px;line-height:1.45;color:#667580&quot;&gt;动态购电计划&lt;br&gt;成本、应急量&lt;br&gt;MAE/RMSE/修正MAPE&lt;/div&gt;" vertex="1">
+          <mxGeometry height="155" width="245" x="1280" y="475" as="geometry" />
+        </mxCell>
+        <mxCell id="13" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;strokeWidth=1.5;align=center;verticalAlign=middle;spacing=10;fontFamily=Microsoft YaHei;labelBackgroundColor=none;" value="&lt;div style=&quot;font-size:16px;font-weight:bold;color:#1D2933&quot;&gt;方案选择与评价&lt;/div&gt;&lt;div style=&quot;height:9px&quot;&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px;line-height:1.45;color:#667580&quot;&gt;验证集选择S0—S3策略&lt;br&gt;测试集比较4-2与4-3&lt;/div&gt;" vertex="1">
+          <mxGeometry height="135" width="390" x="590" y="730" as="geometry" />
+        </mxCell>
+        <mxCell id="14" edge="1" parent="1" source="3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=18;html=1;strokeWidth=1.5;endArrow=block;endFill=1;dashed=0;fontColor=default;fontSize=12;labelBackgroundColor=none;fontFamily=Microsoft YaHei;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=1;" target="4" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="15" edge="1" parent="1" source="4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=18;html=1;strokeWidth=1.5;endArrow=block;endFill=1;dashed=0;fontColor=default;fontSize=12;labelBackgroundColor=none;fontFamily=Microsoft YaHei;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=1;" target="5" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="16" edge="1" parent="1" source="5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=18;html=1;strokeWidth=1.5;endArrow=block;endFill=1;dashed=0;fontColor=default;fontSize=12;labelBackgroundColor=none;fontFamily=Microsoft YaHei;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=1;" target="6" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="17" edge="1" parent="1" source="6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=18;html=1;strokeWidth=1.5;endArrow=block;endFill=1;dashed=0;fontColor=default;fontSize=12;labelBackgroundColor=none;fontFamily=Microsoft YaHei;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=1;" target="7" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="18" edge="1" parent="1" source="7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=18;html=1;strokeWidth=1.5;endArrow=block;endFill=1;dashed=0;fontColor=default;fontSize=12;labelBackgroundColor=none;fontFamily=Microsoft YaHei;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=1;" target="8" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="19" edge="1" parent="1" source="8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=18;html=1;strokeWidth=1.5;endArrow=block;endFill=1;dashed=0;fontColor=default;fontSize=12;labelBackgroundColor=none;fontFamily=Microsoft YaHei;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=1;" target="10" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="20" edge="1" parent="1" source="9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=18;html=1;strokeWidth=1.5;endArrow=block;endFill=1;dashed=0;fontColor=default;fontSize=12;labelBackgroundColor=none;fontFamily=Microsoft YaHei;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=1;" target="10" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="21" edge="1" parent="1" source="10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=18;html=1;strokeWidth=1.5;endArrow=block;endFill=1;dashed=0;fontColor=default;fontSize=12;labelBackgroundColor=none;fontFamily=Microsoft YaHei;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=1;" target="11" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="22" edge="1" parent="1" source="11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=18;html=1;strokeWidth=1.5;endArrow=block;endFill=1;dashed=0;fontColor=default;fontSize=12;labelBackgroundColor=none;fontFamily=Microsoft YaHei;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=1;" target="12" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="23" edge="1" parent="1" source="11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=18;html=1;strokeWidth=1.5;endArrow=block;endFill=1;dashed=0;fontColor=default;fontSize=12;labelBackgroundColor=none;fontFamily=Microsoft YaHei;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=1;" target="13" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="24" edge="1" parent="1" source="12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=18;html=1;strokeWidth=1.5;endArrow=block;endFill=1;dashed=0;fontColor=default;fontSize=12;labelBackgroundColor=none;fontFamily=Microsoft YaHei;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=1;" target="13" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

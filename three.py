@@ -1,7 +1,7 @@
 """2026 CUMCM C题问题三：多时点光伏预报下的 MPC-LP 购电策略。
 
 在问题二模型基础上：
-- 负荷继续使用历史滚动傅里叶—Haar小波预测，并用当日已观测负荷在线纠偏；
+- 负荷继承严格前向贝叶斯优化后的年度谐波—岭回归—傅里叶—Haar小波模型，并用当日已观测负荷在线纠偏；
 - 光伏使用附件3在0:00、6:00、12:00、18:00发布的未来24小时预报；
 - 每次求解未来24小时，只执行到下一次预报发布时刻；
 - 增购部分按1.5倍电价，减购部分退回原价并支付50%违约费；
@@ -11,6 +11,7 @@
   C题/result3.xlsx
   C题/问题三逐日汇总.csv
   C题/问题三预报时刻对比.csv
+其中策略只按验证集费用选择，测试集仅用于最终泛化检验。
 
 依赖：two.py、numpy、scipy、openpyxl
 运行：python three.py
@@ -40,6 +41,7 @@ DEFAULT_TEMPLATE = ROOT / "C题" / "附件" / "附件5" / "result3.xlsx"
 DEFAULT_OUTPUT = ROOT / "C题" / "result3.xlsx"
 DEFAULT_SUMMARY = ROOT / "C题" / "问题三逐日汇总.csv"
 DEFAULT_COMPARISON = ROOT / "C题" / "问题三预报时刻对比.csv"
+DEFAULT_SPLIT_REPORT = ROOT / "C题" / "问题三_训练验证测试检验.csv"
 
 
 @dataclass(frozen=True)
@@ -167,6 +169,7 @@ def forecast_load_profile(
     target_date: date,
     hours: np.ndarray,
     cfg: Config,
+    allowed_indices: set[int] | None = None,
 ) -> np.ndarray:
     profile = two._weighted_history_profile(
         historical.load_kw,
@@ -175,7 +178,18 @@ def forecast_load_profile(
         target_date,
         baseline.load_kw,
         cfg,
+        allowed_indices,
     )
+    dynamic_load = two.fit_dynamic_load_profile(
+        historical,
+        cutoff,
+        target_date,
+        baseline.load_kw,
+        cfg,
+        allowed_indices,
+    )
+    blend = float(np.clip(cfg.dynamic_load_blend, 0.0, 1.0))
+    profile = (1.0 - blend) * profile + blend * dynamic_load
     fourier = two.fit_load_fourier(hours, profile)
     residual = two.wavelet_correct_residual(profile, fourier, cfg.wavelet_level)
     return np.maximum(0.0, fourier + residual)
@@ -214,21 +228,33 @@ def prepare_decision_inputs(
     historical: two.HistoricalData,
     forecasts: ForecastData,
     cfg: Config,
+    training_cutoff: int | None = None,
+    training_indices: set[int] | None = None,
 ) -> dict[tuple[int, int], DecisionInput]:
     hours = np.arange(144, dtype=float) * cfg.dt_hours
     raw: dict[tuple[int, int], tuple[np.ndarray, np.ndarray]] = {}
 
     for day_index, current_date in enumerate(historical.dates):
+        # 训练期逐日因果拟合；验证和测试阶段固定使用训练集样本。
+        model_cutoff = (
+            day_index
+            if training_cutoff is None
+            else min(day_index, training_cutoff)
+        )
+        allowed_indices = training_indices
+        forecast_cfg = two.bayesian_load_config(cfg, current_date)
         current_load = forecast_load_profile(
-            historical, baseline, day_index, current_date, hours, cfg
+            historical, baseline, model_cutoff, current_date, hours, forecast_cfg,
+            allowed_indices=allowed_indices,
         )
         next_load = forecast_load_profile(
             historical,
             baseline,
-            day_index,
+            model_cutoff,
             current_date + timedelta(days=1),
             hours,
-            cfg,
+            forecast_cfg,
+            allowed_indices=training_indices,
         )
         for release_hour in (0, 6, 12, 18):
             start = release_hour * 6
@@ -256,6 +282,8 @@ def prepare_decision_inputs(
             residuals: list[np.ndarray] = []
             first = max(0, day_index - cfg.risk_days)
             for historical_index in range(first, day_index):
+                if training_indices is not None and historical_index not in training_indices:
+                    continue
                 # 历史同一发布时间的24小时误差在当前发布时间已经全部可观测。
                 hist_load, hist_pv = raw[(historical_index, release_hour)]
                 actual_load = actual_horizon(
@@ -873,6 +901,94 @@ def write_strategy_comparison(path: Path, summaries: list[StrategySummary]) -> N
             )
 
 
+def strategy_period_metrics(
+    summary: StrategySummary,
+    split: two.DatasetSplit,
+    label: str,
+) -> dict[str, float | int | str]:
+    groups = split.cycle_labels([item.day for item in summary.results])
+    selected_indices = set(groups[label])
+    selected = [item for index, item in enumerate(summary.results) if index in selected_indices]
+    if not selected:
+        raise ValueError(f"{summary.name}的{label}为空。")
+    plan_energy = float(sum(np.sum(item.plan_grid_kwh) for item in selected))
+    final_energy = float(sum(np.sum(item.final_grid_kwh) for item in selected))
+    increase_energy = float(
+        sum(
+            np.sum(np.maximum(0.0, item.final_grid_kwh - item.plan_grid_kwh))
+            for item in selected
+        )
+    )
+    decrease_energy = float(
+        sum(
+            np.sum(np.maximum(0.0, item.plan_grid_kwh - item.final_grid_kwh))
+            for item in selected
+        )
+    )
+    emergency_energy = float(sum(np.sum(item.emergency_kwh) for item in selected))
+    plan_cost = float(sum(item.plan_cost_yuan for item in selected))
+    purchase_cost = float(sum(item.settled_purchase_cost_yuan for item in selected))
+    emergency_cost = float(sum(item.emergency_cost_yuan for item in selected))
+    purchased = final_energy + emergency_energy
+    return {
+        "开始日期": selected[0].day.isoformat(),
+        "结束日期": selected[-1].day.isoformat(),
+        "天数": len(selected),
+        "初始计划购电量(kWh)": plan_energy,
+        "最终购电量(kWh)": final_energy,
+        "增购量(kWh)": increase_energy,
+        "退购量(kWh)": decrease_energy,
+        "紧急购电量(kWh)": emergency_energy,
+        "紧急购电占比": 0.0 if purchased <= 0.0 else emergency_energy / purchased,
+        "初始计划购电费(元)": plan_cost,
+        "调整后购电费(元)": purchase_cost,
+        "紧急购电费(元)": emergency_cost,
+        "总购电费(元)": purchase_cost + emergency_cost,
+    }
+
+
+def select_strategy_on_validation(
+    summaries: list[StrategySummary], split: two.DatasetSplit
+) -> StrategySummary:
+    """只依据验证集成本选策略，测试集不参与模型选择。"""
+    return min(
+        summaries,
+        key=lambda item: float(
+            strategy_period_metrics(item, split, "验证集")["总购电费(元)"]
+        ),
+    )
+
+
+def write_split_evaluation(
+    path: Path,
+    summaries: list[StrategySummary],
+    selected: StrategySummary,
+    split: two.DatasetSplit,
+) -> None:
+    rows: list[dict[str, object]] = []
+    for label in ("训练集", "验证集", "测试集"):
+        for summary in summaries:
+            row: dict[str, object] = {
+                "数据集": label,
+                "策略": summary.name,
+                "验证集选定策略": "是" if summary.name == selected.name else "否",
+            }
+            row.update(strategy_period_metrics(summary, split, label))
+            rows.append(row)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8-sig", newline="") as file:
+        writer = csv.DictWriter(file, fieldnames=list(rows[0].keys()), lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(rows)
+
+    validation_cost = strategy_period_metrics(selected, split, "验证集")["总购电费(元)"]
+    test_cost = strategy_period_metrics(selected, split, "测试集")["总购电费(元)"]
+    print("\n问题三训练/验证/测试检验")
+    print(f"  验证集选定策略：{selected.name}，验证集费用={validation_cost:.4f} 元")
+    print(f"  冻结策略后的测试集费用：{test_cost:.4f} 元")
+    print(f"数据集检验报告：{path.resolve()}")
+
+
 def print_summary(
     summaries: list[StrategySummary], selected: StrategySummary, output: Path
 ) -> None:
@@ -913,6 +1029,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--summary", type=Path, default=DEFAULT_SUMMARY)
     parser.add_argument("--comparison", type=Path, default=DEFAULT_COMPARISON)
+    parser.add_argument("--split-report", type=Path, default=DEFAULT_SPLIT_REPORT)
+    parser.add_argument("--train-end", type=date.fromisoformat, default=date(2025, 7, 31))
+    parser.add_argument(
+        "--validation-end", type=date.fromisoformat, default=date(2025, 9, 30)
+    )
     return parser.parse_args()
 
 
@@ -922,9 +1043,16 @@ def main() -> None:
     baseline, chronological_order = two.read_baseline(args.baseline)
     historical = two.read_historical_data(args.load, args.pv, chronological_order)
     forecasts = read_forecasts(args.forecast)
+    split = two.DatasetSplit(args.train_end, args.validation_end)
+    groups = split.cycle_labels(historical.dates)
+    training_indices = set(groups["训练集"])
     print("正在构造四个发布时间的因果预测与历史误差安全裕度……")
     decision_inputs = prepare_decision_inputs(
-        baseline, historical, forecasts, cfg
+        baseline,
+        historical,
+        forecasts,
+        cfg,
+        training_indices=training_indices,
     )
 
     strategy_specs = [
@@ -947,7 +1075,7 @@ def main() -> None:
         validate_strategy(summary, cfg)
         summaries.append(summary)
 
-    selected_strategy = min(summaries, key=lambda item: item.total_cost_yuan)
+    selected_strategy = select_strategy_on_validation(summaries, split)
     write_result_workbook(
         args.template,
         args.output,
@@ -958,6 +1086,7 @@ def main() -> None:
     )
     write_daily_summary(args.summary, selected_strategy)
     write_strategy_comparison(args.comparison, summaries)
+    write_split_evaluation(args.split_report, summaries, selected_strategy, split)
     print_summary(summaries, selected_strategy, args.output)
 
 

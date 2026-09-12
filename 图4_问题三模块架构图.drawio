@@ -1,0 +1,58 @@
+<mxfile host="Electron" agent="Codex" compressed="false">
+  <diagram id="page-1" name="问题三">
+    <mxGraphModel dx="1695" dy="974" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="930" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=25;fontStyle=1;fontFamily=Microsoft YaHei;labelBackgroundColor=none;" value="问题三模块架构：事件触发式MPC滚动修正" vertex="1">
+          <mxGeometry height="48" width="1150" x="250" y="25" as="geometry" />
+        </mxCell>
+        <mxCell id="3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;strokeWidth=1.5;align=center;verticalAlign=middle;spacing=10;fontFamily=Microsoft YaHei;labelBackgroundColor=none;" value="&lt;div style=&quot;font-size:16px;font-weight:bold;color:#1D2933&quot;&gt;0:00基础计划&lt;/div&gt;&lt;div style=&quot;height:9px&quot;&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px;line-height:1.45;color:#667580&quot;&gt;继承前向贝叶斯负荷模型&lt;br&gt;与训练集风险储备&lt;br&gt;生成初始购电计划&lt;/div&gt;" vertex="1">
+          <mxGeometry height="165" width="250" x="35" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;strokeWidth=1.5;align=center;verticalAlign=middle;spacing=10;fontFamily=Microsoft YaHei;labelBackgroundColor=none;" value="&lt;div style=&quot;font-size:16px;font-weight:bold;color:#1D2933&quot;&gt;实时观测&lt;/div&gt;&lt;div style=&quot;height:9px&quot;&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px;line-height:1.45;color:#667580&quot;&gt;6:00／12:00／18:00&lt;br&gt;获得已发生负荷偏差&lt;/div&gt;" vertex="1">
+          <mxGeometry height="165" width="250" x="325" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;strokeWidth=1.5;align=center;verticalAlign=middle;spacing=10;fontFamily=Microsoft YaHei;labelBackgroundColor=none;" value="&lt;div style=&quot;font-size:16px;font-weight:bold;color:#1D2933&quot;&gt;负荷偏差滚动修正&lt;/div&gt;&lt;div style=&quot;height:9px&quot;&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px;line-height:1.45;color:#667580&quot;&gt;指数衰减外推&lt;br&gt;半衰期6小时&lt;/div&gt;" vertex="1">
+          <mxGeometry height="165" width="260" x="615" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;strokeWidth=1.5;align=center;verticalAlign=middle;spacing=10;fontFamily=Microsoft YaHei;labelBackgroundColor=none;" value="&lt;div style=&quot;font-size:16px;font-weight:bold;color:#1D2933&quot;&gt;有限时域MPC-LP&lt;/div&gt;&lt;div style=&quot;height:9px&quot;&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px;line-height:1.45;color:#667580&quot;&gt;未来24小时预测&lt;br&gt;已执行时段状态固定&lt;br&gt;优化增购、退购、储能&lt;br&gt;并满足终端SOC约束&lt;/div&gt;" vertex="1">
+          <mxGeometry height="215" width="285" x="915" y="185" as="geometry" />
+        </mxCell>
+        <mxCell id="7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;strokeWidth=1.5;align=center;verticalAlign=middle;spacing=10;fontFamily=Microsoft YaHei;labelBackgroundColor=none;" value="&lt;div style=&quot;font-size:16px;font-weight:bold;color:#1D2933&quot;&gt;实施当前阶段&lt;/div&gt;&lt;div style=&quot;height:9px&quot;&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px;line-height:1.45;color:#667580&quot;&gt;只执行至下一触发点&lt;br&gt;保留剩余计划&lt;/div&gt;" vertex="1">
+          <mxGeometry height="165" width="265" x="1240" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="8" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;strokeWidth=1.5;align=center;verticalAlign=middle;spacing=10;fontFamily=Microsoft YaHei;labelBackgroundColor=none;" value="&lt;div style=&quot;font-size:16px;font-weight:bold;color:#1D2933&quot;&gt;最终结算&lt;/div&gt;&lt;div style=&quot;height:9px&quot;&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px;line-height:1.45;color:#667580&quot;&gt;相对0:00原计划计算&lt;br&gt;净增购、净退购及应急成本&lt;/div&gt;" vertex="1">
+          <mxGeometry height="150" width="320" x="1000" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;strokeWidth=1.5;align=center;verticalAlign=middle;spacing=10;fontFamily=Microsoft YaHei;labelBackgroundColor=none;" value="&lt;div style=&quot;font-size:16px;font-weight:bold;color:#1D2933&quot;&gt;策略选择与检验&lt;/div&gt;&lt;div style=&quot;height:9px&quot;&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px;line-height:1.45;color:#667580&quot;&gt;验证集比较S0—S3并选S2&lt;br&gt;冻结策略后由测试集评价&lt;/div&gt;" vertex="1">
+          <mxGeometry height="150" width="340" x="238" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="10" edge="1" parent="1" source="3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=18;html=1;strokeWidth=1.5;endArrow=block;endFill=1;dashed=0;fontColor=default;fontSize=12;labelBackgroundColor=none;fontFamily=Microsoft YaHei;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=1;" target="4" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="11" edge="1" parent="1" source="4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=18;html=1;strokeWidth=1.5;endArrow=block;endFill=1;dashed=0;fontColor=default;fontSize=12;labelBackgroundColor=none;fontFamily=Microsoft YaHei;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=1;" target="5" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="12" edge="1" parent="1" source="5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=18;html=1;strokeWidth=1.5;endArrow=block;endFill=1;dashed=0;fontColor=default;fontSize=12;labelBackgroundColor=none;fontFamily=Microsoft YaHei;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=1;" target="6" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="13" edge="1" parent="1" source="6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=18;html=1;strokeWidth=1.5;endArrow=block;endFill=1;dashed=0;fontColor=default;fontSize=12;labelBackgroundColor=none;fontFamily=Microsoft YaHei;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=1;" target="7" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="14" edge="1" parent="1" source="7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=18;html=1;strokeWidth=1.5;endArrow=block;endFill=1;dashed=0;fontColor=default;fontSize=12;labelBackgroundColor=none;fontFamily=Microsoft YaHei;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=1;" target="8" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="15" edge="1" parent="1" source="8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=18;html=1;strokeWidth=1.5;endArrow=block;endFill=1;dashed=0;fontColor=default;fontSize=12;labelBackgroundColor=none;fontFamily=Microsoft YaHei;exitX=0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=1;" target="9" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="16" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=18;html=1;strokeWidth=1.5;endArrow=block;endFill=1;dashed=1;fontColor=default;fontSize=12;labelBackgroundColor=none;fontFamily=Microsoft YaHei;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="4" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1362.5" y="432" as="sourcePoint" />
+            <mxPoint x="440" y="432.0000000000002" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

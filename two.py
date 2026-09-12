@@ -1,31 +1,36 @@
 """2026 CUMCM C题问题二：滚动傅里叶—小波—正弦预测与购电线性规划。
 
 每天 0:00 仅使用此前已观测的数据预测当天负荷和光伏功率：
-1. 二阶傅里叶级数提取负荷周期趋势；
-2. 三级 Haar 小波软阈值重构历史傅里叶残差；
+1. 年度谐波—星期效应岭回归与历史轮廓融合预测负荷；
+2. 二阶傅里叶与 Haar 小波重构日内负荷残差；
 3. 截断幂正弦函数拟合光伏功率；
 4. 历史净负荷预测误差的 80% 分位数作为安全裕度；
 5. 采用 48 小时滚动线性规划，执行前 24 小时并连续传递 SOC；
 6. 用真实数据回放，供电不足部分按当时电价 5 倍紧急购电。
+7. 采用“训训训验训测”循环划分，并用严格前向贝叶斯优化和早停选择负荷参数。
 
 默认输入：C题/附件/csv/附件1.csv 与附件2的两个 CSV
 默认模板：C题/附件/附件5/result2.xlsx
 默认输出：C题/result2.xlsx
 默认汇总：C题/问题二逐日汇总.csv
+默认检验：C题/问题二_训练验证测试检验.csv
 
 依赖：numpy、scipy、openpyxl
-运行：python two.py
+正式求解：python two.py
+贝叶斯寻优：python two.py --bayes-optimize
+自定义寻优：python two.py --bayes-optimize --bayes-trials 50 --bayes-patience 12 --bayes-seed 2026
 """
 
 from __future__ import annotations
 
 import argparse
 import csv
+import json
 import math
 import os
 import shutil
 from copy import copy
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass, replace
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
@@ -40,6 +45,8 @@ DEFAULT_PV = ROOT / "C题" / "附件" / "csv" / "附件2_光伏发电实际功�
 DEFAULT_TEMPLATE = ROOT / "C题" / "附件" / "附件5" / "result2.xlsx"
 DEFAULT_OUTPUT = ROOT / "C题" / "result2.xlsx"
 DEFAULT_SUMMARY = ROOT / "C题" / "问题二逐日汇总.csv"
+DEFAULT_SPLIT_REPORT = ROOT / "C题" / "问题二_训练验证测试检验.csv"
+DEFAULT_BAYES_REPORT = ROOT / "C题" / "贝叶斯优化_负荷参数与评价_严格前向.json"
 
 
 @dataclass(frozen=True)
@@ -58,6 +65,10 @@ class Config:
     half_life_days: float = 7.0
     same_weekday_multiplier: float = 2.0
     wavelet_level: int = 3
+    annual_harmonics: int = 3
+    load_ridge_lambda: float = 3.0
+    dynamic_load_blend: float = 0.65
+    use_bayesian_load_schedule: bool = True
     risk_quantile: float = 0.80
     emergency_price_multiplier: float = 5.0
     throughput_tie_breaker: float = 1.0e-7
@@ -70,6 +81,120 @@ class Config:
     @property
     def max_discharge_kwh(self) -> float:
         return self.max_discharge_power_kw * self.dt_hours
+
+
+# 严格前向贝叶斯优化得到的参数轨迹。每组参数只从生效日前已经完成的
+# 验证日获得，因而不会让未来验证值或测试值进入当前预测。日期表示参数
+# 最早可用于0:00计划的日期；未到首个日期时沿用 Config 的原始参数。
+BAYESIAN_LOAD_PARAMETER_SCHEDULE: tuple[
+    tuple[date, dict[str, float | int]], ...
+] = (
+    (
+        date(2025, 2, 16),
+        {
+            "history_days": 38,
+            "half_life_days": 25.29917197614039,
+            "same_weekday_multiplier": 2.241902727000516,
+            "wavelet_level": 2,
+            "annual_harmonics": 3,
+            "load_ridge_lambda": 0.003840001534395503,
+            "dynamic_load_blend": 0.6206534746761987,
+        },
+    ),
+    (
+        date(2025, 3, 12),
+        {
+            "history_days": 27,
+            "half_life_days": 27.866925493061643,
+            "same_weekday_multiplier": 2.0302869528791616,
+            "wavelet_level": 2,
+            "annual_harmonics": 3,
+            "load_ridge_lambda": 0.002040174751235714,
+            "dynamic_load_blend": 0.6470383902370724,
+        },
+    ),
+    (
+        date(2025, 4, 23),
+        {
+            "history_days": 35,
+            "half_life_days": 22.86236550087216,
+            "same_weekday_multiplier": 1.7054409173409268,
+            "wavelet_level": 2,
+            "annual_harmonics": 3,
+            "load_ridge_lambda": 0.0010398473604926101,
+            "dynamic_load_blend": 0.8157826442179166,
+        },
+    ),
+    (
+        date(2025, 5, 17),
+        {
+            "history_days": 23,
+            "half_life_days": 22.16005337031691,
+            "same_weekday_multiplier": 3.4204172241648596,
+            "wavelet_level": 2,
+            "annual_harmonics": 3,
+            "load_ridge_lambda": 0.00010683581757667908,
+            "dynamic_load_blend": 0.726727237291571,
+        },
+    ),
+    (
+        date(2025, 8, 3),
+        {
+            "history_days": 35,
+            "half_life_days": 22.86236550087216,
+            "same_weekday_multiplier": 1.7054409173409268,
+            "wavelet_level": 2,
+            "annual_harmonics": 3,
+            "load_ridge_lambda": 0.0010398473604926101,
+            "dynamic_load_blend": 0.8157826442179166,
+        },
+    ),
+)
+
+
+def bayesian_load_config(cfg: Config, issue_date: date) -> Config:
+    """返回计划发布日可合法使用的已冻结负荷参数。"""
+    if not cfg.use_bayesian_load_schedule:
+        return cfg
+    overrides: dict[str, float | int] | None = None
+    for effective_date, candidate in BAYESIAN_LOAD_PARAMETER_SCHEDULE:
+        if issue_date < effective_date:
+            break
+        overrides = candidate
+    return cfg if overrides is None else replace(cfg, **overrides)
+
+
+@dataclass(frozen=True)
+class DatasetSplit:
+    """时间序列数据集边界；验证集和测试集绝不参与提前拟合。"""
+
+    train_end: date = date(2025, 7, 31)
+    validation_end: date = date(2025, 9, 30)
+
+    def training_cutoff(self, dates: list[date]) -> int:
+        """返回训练集结束后的首个索引，供后续阶段冻结拟合样本。"""
+        if self.validation_end <= self.train_end:
+            raise ValueError("验证集结束日期必须晚于训练集结束日期。")
+        cutoff = sum(day <= self.train_end for day in dates)
+        if cutoff <= 0 or cutoff >= len(dates):
+            raise ValueError("训练集必须非空，且不能覆盖全部数据。")
+        return cutoff
+
+    def label(self, day: date) -> str:
+        if day <= self.train_end:
+            return "训练集"
+        if day <= self.validation_end:
+            return "验证集"
+        return "测试集"
+
+    def cycle_labels(self, dates: list[date]) -> dict[str, list[int]]:
+        """全年按固定循环均匀抽取：训练、训练、训练、验证、训练、测试。"""
+        groups = {"训练集": [], "验证集": [], "测试集": []}
+        for index, _ in enumerate(dates):
+            slot = index % 6
+            label = "验证集" if slot == 3 else "测试集" if slot == 5 else "训练集"
+            groups[label].append(index)
+        return groups
 
 
 @dataclass
@@ -347,11 +472,16 @@ def _weighted_history_profile(
     target_date: date,
     baseline: np.ndarray,
     cfg: Config,
+    allowed_indices: set[int] | None = None,
 ) -> np.ndarray:
     if cutoff <= 0:
         return baseline.copy()
     first = max(0, cutoff - cfg.history_days)
     indices = np.arange(first, cutoff, dtype=int)
+    if allowed_indices is not None:
+        indices = np.asarray([i for i in indices if i in allowed_indices], dtype=int)
+    if indices.size == 0:
+        return baseline.copy()
     ages = cutoff - 1 - indices
     weights = np.exp(-math.log(2.0) * ages / cfg.half_life_days)
     same_weekday = np.asarray(
@@ -366,6 +496,48 @@ def _weighted_history_profile(
     return (1.0 - prior_share) * profile + prior_share * baseline
 
 
+def _calendar_features(day: date, harmonics: int) -> np.ndarray:
+    """年度谐波与星期效应；全部特征在预测日前即可确定。"""
+    day_of_year = day.timetuple().tm_yday - 1
+    columns = [1.0]
+    for harmonic in range(1, harmonics + 1):
+        angle = 2.0 * math.pi * harmonic * day_of_year / 365.0
+        columns.extend([math.cos(angle), math.sin(angle)])
+    weekday = day.weekday()
+    columns.extend([1.0 if weekday == value else 0.0 for value in range(1, 7)])
+    return np.asarray(columns, dtype=float)
+
+
+def fit_dynamic_load_profile(
+    historical: HistoricalData,
+    cutoff: int,
+    target_date: date,
+    baseline: np.ndarray,
+    cfg: Config,
+    allowed_indices: set[int] | None,
+) -> np.ndarray:
+    """用训练日的年度周期和星期效应岭回归预测完整日负荷曲线。"""
+    indices = [
+        index for index in range(cutoff)
+        if allowed_indices is None or index in allowed_indices
+    ]
+    feature_count = 1 + 2 * cfg.annual_harmonics + 6
+    if len(indices) < max(14, feature_count + 1):
+        return baseline.copy()
+    design = np.vstack(
+        [_calendar_features(historical.dates[index], cfg.annual_harmonics) for index in indices]
+    )
+    target = historical.load_kw[indices]
+    penalty = np.eye(feature_count, dtype=float) * cfg.load_ridge_lambda
+    penalty[0, 0] = 0.0
+    coefficients = np.linalg.solve(
+        design.T @ design + penalty,
+        design.T @ target,
+    )
+    prediction = _calendar_features(target_date, cfg.annual_harmonics) @ coefficients
+    return np.maximum(0.0, prediction)
+
+
 def make_forecast(
     historical: HistoricalData,
     baseline: BaselineData,
@@ -373,7 +545,10 @@ def make_forecast(
     target_date: date,
     hours: np.ndarray,
     cfg: Config,
+    allowed_indices: set[int] | None = None,
+    pv_cfg: Config | None = None,
 ) -> Forecast:
+    pv_settings = cfg if pv_cfg is None else pv_cfg
     load_profile = _weighted_history_profile(
         historical.load_kw,
         historical.dates,
@@ -381,14 +556,26 @@ def make_forecast(
         target_date,
         baseline.load_kw,
         cfg,
+        allowed_indices,
     )
+    dynamic_load = fit_dynamic_load_profile(
+        historical,
+        cutoff,
+        target_date,
+        baseline.load_kw,
+        cfg,
+        allowed_indices,
+    )
+    blend = float(np.clip(cfg.dynamic_load_blend, 0.0, 1.0))
+    load_profile = (1.0 - blend) * load_profile + blend * dynamic_load
     pv_profile = _weighted_history_profile(
         historical.pv_kw,
         historical.dates,
         cutoff,
         target_date,
         baseline.pv_kw,
-        cfg,
+        pv_settings,
+        allowed_indices,
     )
 
     load_fourier = fit_load_fourier(hours, load_profile)
@@ -574,6 +761,8 @@ def simulate_year(
     baseline: BaselineData,
     historical: HistoricalData,
     cfg: Config,
+    training_cutoff: int | None = None,
+    training_indices: set[int] | None = None,
 ) -> list[DailyResult]:
     hours = np.arange(144, dtype=float) * cfg.dt_hours
     price_48 = np.tile(baseline.price, 2)
@@ -582,16 +771,27 @@ def simulate_year(
     soc = cfg.initial_soc_kwh
 
     for day_index, current_date in enumerate(historical.dates):
+        # 训练期采用因果滚动拟合；进入验证/测试期后冻结训练样本边界。
+        model_cutoff = (
+            day_index
+            if training_cutoff is None
+            else min(day_index, training_cutoff)
+        )
+        forecast_cfg = bayesian_load_config(cfg, current_date)
         current_forecast = make_forecast(
-            historical, baseline, day_index, current_date, hours, cfg
+            historical, baseline, model_cutoff, current_date, hours, forecast_cfg,
+            allowed_indices=training_indices,
+            pv_cfg=cfg,
         )
         next_forecast = make_forecast(
             historical,
             baseline,
-            day_index,
+            model_cutoff,
             current_date + timedelta(days=1),
             hours,
-            cfg,
+            forecast_cfg,
+            allowed_indices=training_indices,
+            pv_cfg=cfg,
         )
         reserve = risk_reserve(error_history, cfg)
         risk_load_current = current_forecast.load_kw + reserve / cfg.dt_hours
@@ -651,7 +851,8 @@ def simulate_year(
         forecast_net = (
             current_forecast.load_kw - current_forecast.pv_kw
         ) * cfg.dt_hours
-        error_history.append(actual_net - forecast_net)
+        if training_indices is None or day_index in training_indices:
+            error_history.append(actual_net - forecast_net)
 
         if (day_index + 1) % 30 == 0 or day_index == len(historical.dates) - 1:
             print(
@@ -869,6 +1070,87 @@ def write_daily_summary(
             )
 
 
+def _r_squared(actual: np.ndarray, forecast: np.ndarray) -> float:
+    residual = float(np.sum((actual - forecast) ** 2))
+    total = float(np.sum((actual - np.mean(actual)) ** 2))
+    return float("nan") if total <= 0.0 else 1.0 - residual / total
+
+
+def _split_indices(historical: HistoricalData, split: DatasetSplit) -> dict[str, list[int]]:
+    groups = split.cycle_labels(historical.dates)
+    if any(not indices for indices in groups.values()):
+        raise ValueError(f"训练/验证/测试划分产生空数据集：{groups}")
+    return groups
+
+
+def split_period_metrics(
+    historical: HistoricalData,
+    results: list[DailyResult],
+    indices: list[int],
+) -> dict[str, float | int | str]:
+    selected = [results[index] for index in indices]
+    actual_load = historical.load_kw[indices]
+    actual_pv = historical.pv_kw[indices]
+    forecast_load = np.asarray([item.forecast_load_kw for item in selected])
+    forecast_pv = np.asarray([item.forecast_pv_kw for item in selected])
+    actual_net = actual_load - actual_pv
+    forecast_net = forecast_load - forecast_pv
+    plan_energy = float(sum(np.sum(item.grid_kwh) for item in selected))
+    emergency_energy = float(sum(np.sum(item.emergency_kwh) for item in selected))
+    plan_cost = float(sum(item.plan_cost_yuan for item in selected))
+    emergency_cost = float(sum(item.emergency_cost_yuan for item in selected))
+    purchased = plan_energy + emergency_energy
+    return {
+        "开始日期": selected[0].day.isoformat(),
+        "结束日期": selected[-1].day.isoformat(),
+        "天数": len(selected),
+        "负荷MAE(kW)": float(np.mean(np.abs(actual_load - forecast_load))),
+        "负荷RMSE(kW)": float(np.sqrt(np.mean((actual_load - forecast_load) ** 2))),
+        "负荷R2": _r_squared(actual_load, forecast_load),
+        "光伏MAE(kW)": float(np.mean(np.abs(actual_pv - forecast_pv))),
+        "光伏RMSE(kW)": float(np.sqrt(np.mean((actual_pv - forecast_pv) ** 2))),
+        "光伏R2": _r_squared(actual_pv, forecast_pv),
+        "净负荷MAE(kW)": float(np.mean(np.abs(actual_net - forecast_net))),
+        "净负荷RMSE(kW)": float(np.sqrt(np.mean((actual_net - forecast_net) ** 2))),
+        "计划购电量(kWh)": plan_energy,
+        "紧急购电量(kWh)": emergency_energy,
+        "紧急购电占比": 0.0 if purchased <= 0.0 else emergency_energy / purchased,
+        "计划购电费(元)": plan_cost,
+        "紧急购电费(元)": emergency_cost,
+        "总购电费(元)": plan_cost + emergency_cost,
+    }
+
+
+def write_split_evaluation(
+    path: Path,
+    historical: HistoricalData,
+    results: list[DailyResult],
+    split: DatasetSplit,
+) -> None:
+    groups = _split_indices(historical, split)
+    rows = []
+    for label in ("训练集", "验证集", "测试集"):
+        row = {"数据集": label}
+        row.update(split_period_metrics(historical, results, groups[label]))
+        rows.append(row)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    headers = list(rows[0].keys())
+    with path.open("w", encoding="utf-8-sig", newline="") as file:
+        writer = csv.DictWriter(file, fieldnames=headers, lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(rows)
+
+    print("\n问题二训练/验证/测试检验")
+    for row in rows:
+        print(
+            f"  {row['数据集']} {row['开始日期']}至{row['结束日期']}："
+            f"净负荷RMSE={row['净负荷RMSE(kW)']:.4f} kW，"
+            f"总费用={row['总购电费(元)']:.4f} 元，"
+            f"紧急购电占比={row['紧急购电占比']:.4%}"
+        )
+    print(f"数据集检验报告：{path.resolve()}")
+
+
 def validate_year(
     historical: HistoricalData,
     results: list[DailyResult],
@@ -946,6 +1228,342 @@ def print_summary(
     print(f"逐日汇总：{summary.resolve()}")
 
 
+@dataclass(frozen=True)
+class LoadSearchPoint:
+    """负荷预测贝叶斯优化的一个超参数候选。"""
+
+    history_days: int
+    half_life_days: float
+    same_weekday_multiplier: float
+    wavelet_level: int
+    annual_harmonics: int
+    load_ridge_lambda: float
+    dynamic_load_blend: float
+
+    def config(self) -> Config:
+        return replace(Config(), **asdict(self))
+
+
+def _decode_load_point(unit: np.ndarray) -> LoadSearchPoint:
+    x = np.clip(np.asarray(unit, dtype=float), 0.0, 1.0)
+    return LoadSearchPoint(
+        history_days=int(round(14 + x[0] * 46)),
+        half_life_days=float(3.0 + x[1] * 27.0),
+        same_weekday_multiplier=float(x[2] * 5.0),
+        wavelet_level=int(round(1 + x[3] * 3)),
+        annual_harmonics=int(round(1 + x[4] * 7)),
+        load_ridge_lambda=float(10.0 ** (-4.0 + 7.0 * x[5])),
+        dynamic_load_blend=float(0.20 + x[6] * 0.80),
+    )
+
+
+def _encode_load_point(point: LoadSearchPoint) -> np.ndarray:
+    return np.asarray(
+        [
+            (point.history_days - 14) / 46,
+            (point.half_life_days - 3.0) / 27.0,
+            point.same_weekday_multiplier / 5.0,
+            (point.wavelet_level - 1) / 3.0,
+            (point.annual_harmonics - 1) / 7.0,
+            (math.log10(point.load_ridge_lambda) + 4.0) / 7.0,
+            (point.dynamic_load_blend - 0.20) / 0.80,
+        ],
+        dtype=float,
+    )
+
+
+def _load_point_key(point: LoadSearchPoint) -> tuple[object, ...]:
+    return (
+        point.history_days,
+        round(point.half_life_days, 6),
+        round(point.same_weekday_multiplier, 6),
+        point.wavelet_level,
+        point.annual_harmonics,
+        round(math.log10(point.load_ridge_lambda), 6),
+        round(point.dynamic_load_blend, 6),
+    )
+
+
+def _matern52(
+    a: np.ndarray, b: np.ndarray, length_scale: float
+) -> np.ndarray:
+    distance = np.sqrt(
+        np.maximum(0.0, np.sum((a[:, None, :] - b[None, :, :]) ** 2, axis=2))
+    )
+    scaled = math.sqrt(5.0) * distance / length_scale
+    return (1.0 + scaled + scaled**2 / 3.0) * np.exp(-scaled)
+
+
+def _expected_improvement(
+    observed_x: np.ndarray,
+    observed_y: np.ndarray,
+    candidates: np.ndarray,
+    length_scale: float,
+) -> np.ndarray:
+    mean_y = float(np.mean(observed_y))
+    scale_y = max(float(np.std(observed_y)), 1.0e-12)
+    normalized_y = (observed_y - mean_y) / scale_y
+    kernel = _matern52(observed_x, observed_x, length_scale)
+    kernel.flat[:: kernel.shape[0] + 1] += 1.0e-7
+    try:
+        chol = np.linalg.cholesky(kernel)
+    except np.linalg.LinAlgError:
+        kernel.flat[:: kernel.shape[0] + 1] += 1.0e-5
+        chol = np.linalg.cholesky(kernel)
+    alpha = np.linalg.solve(chol.T, np.linalg.solve(chol, normalized_y))
+    cross = _matern52(observed_x, candidates, length_scale)
+    mean = cross.T @ alpha
+    solved = np.linalg.solve(chol, cross)
+    sigma = np.sqrt(np.maximum(1.0e-12, 1.0 - np.sum(solved**2, axis=0)))
+    best = float(np.min(normalized_y))
+    improvement = best - mean - 0.001
+    z = improvement / sigma
+    cdf = 0.5 * (
+        1.0 + np.asarray([math.erf(value / math.sqrt(2.0)) for value in z])
+    )
+    pdf = np.exp(-0.5 * z**2) / math.sqrt(2.0 * math.pi)
+    return improvement * cdf + sigma * pdf
+
+
+def _predict_load_indices(
+    baseline: BaselineData,
+    historical: HistoricalData,
+    cfg: Config,
+    indices: list[int],
+    training_indices: set[int],
+    incumbent_rmse: float | None = None,
+    early_stop_margin: float = 0.01,
+) -> tuple[np.ndarray | None, float, bool]:
+    hours = np.arange(144, dtype=float) / 6.0
+    forecasts: list[np.ndarray] = []
+    squared_error = 0.0
+    total_values = len(indices) * 144
+    for position, index in enumerate(indices, start=1):
+        forecast = make_forecast(
+            historical,
+            baseline,
+            index,
+            historical.dates[index],
+            hours,
+            cfg,
+            allowed_indices=training_indices,
+        ).load_kw
+        forecasts.append(forecast)
+        squared_error += float(np.sum((historical.load_kw[index] - forecast) ** 2))
+        if incumbent_rmse is not None and position >= 8:
+            lower_bound = math.sqrt(squared_error / total_values)
+            if lower_bound > incumbent_rmse * (1.0 + early_stop_margin):
+                return None, lower_bound, True
+    return (
+        np.asarray(forecasts, dtype=float),
+        math.sqrt(squared_error / total_values),
+        False,
+    )
+
+
+def _load_metrics(actual: np.ndarray, forecast: np.ndarray) -> dict[str, float]:
+    error = actual - forecast
+    return {
+        "mae_kw": float(np.mean(np.abs(error))),
+        "rmse_kw": float(np.sqrt(np.mean(error**2))),
+        "r2": _r_squared(actual, forecast),
+    }
+
+
+def run_load_bayesian_optimization(args: argparse.Namespace) -> None:
+    """严格前向寻优；仅写参数评价报告，不执行购电线性规划。"""
+    if args.bayes_trials < 2 or not 1 <= args.bayes_initial < args.bayes_trials:
+        raise ValueError("应满足 bayes-trials >= 2 且 1 <= bayes-initial < bayes-trials。")
+    baseline, order = read_baseline(args.baseline)
+    historical = read_historical_data(args.load, args.pv, order)
+    groups = DatasetSplit().cycle_labels(historical.dates)
+    training_indices = set(groups["训练集"])
+    labels = {
+        index: label for label, indices in groups.items() for index in indices
+    }
+    rng = np.random.default_rng(args.bayes_seed)
+    base_cfg = Config()
+    default_point = LoadSearchPoint(
+        base_cfg.history_days,
+        base_cfg.half_life_days,
+        base_cfg.same_weekday_multiplier,
+        base_cfg.wavelet_level,
+        base_cfg.annual_harmonics,
+        base_cfg.load_ridge_lambda,
+        base_cfg.dynamic_load_blend,
+    )
+    current = default_point
+    candidates = [default_point]
+    candidate_sse = [0.0]
+    seen = {_load_point_key(default_point)}
+    validation_seen: list[int] = []
+    all_forecasts: list[np.ndarray] = []
+    proposals: list[dict[str, object]] = []
+    selection_history: list[dict[str, object]] = []
+    proposal_count = 1
+    no_improvement = 0
+    search_stopped = False
+    hours = np.arange(144, dtype=float) / 6.0
+
+    print("严格前向负荷贝叶斯优化：测试集不参与参数搜索。")
+    for index, day in enumerate(historical.dates):
+        current_forecast = make_forecast(
+            historical,
+            baseline,
+            index,
+            day,
+            hours,
+            current.config(),
+            allowed_indices=training_indices,
+        ).load_kw
+        all_forecasts.append(current_forecast)
+        if labels[index] != "验证集":
+            continue
+        validation_seen.append(index)
+        actual = historical.load_kw[index]
+        for candidate_index, point in enumerate(candidates):
+            forecast = (
+                current_forecast
+                if _load_point_key(point) == _load_point_key(current)
+                else make_forecast(
+                    historical,
+                    baseline,
+                    index,
+                    day,
+                    hours,
+                    point.config(),
+                    allowed_indices=training_indices,
+                ).load_kw
+            )
+            candidate_sse[candidate_index] += float(np.sum((actual - forecast) ** 2))
+
+        denominator = len(validation_seen) * 144
+        scores = np.sqrt(np.asarray(candidate_sse) / denominator)
+        incumbent = float(np.min(scores))
+        if proposal_count < args.bayes_trials and not search_stopped:
+            if len(candidates) < args.bayes_initial:
+                unit = rng.random(7)
+                method = "随机初始化"
+            else:
+                pool = rng.random((args.bayes_candidate_pool, 7))
+                acquisition = _expected_improvement(
+                    np.asarray([_encode_load_point(point) for point in candidates]),
+                    scores,
+                    pool,
+                    0.35,
+                )
+                unit = pool[int(np.argmax(acquisition))]
+                method = "贝叶斯期望改进"
+            point = _decode_load_point(unit)
+            attempts = 0
+            while _load_point_key(point) in seen and attempts < 100:
+                point = _decode_load_point(rng.random(7))
+                attempts += 1
+            seen.add(_load_point_key(point))
+            proposal_count += 1
+            _, proposed_score, candidate_stopped = _predict_load_indices(
+                baseline,
+                historical,
+                point.config(),
+                validation_seen,
+                training_indices,
+                incumbent,
+            )
+            improved = (
+                not candidate_stopped
+                and proposed_score < incumbent - args.bayes_min_delta
+            )
+            if not candidate_stopped:
+                candidates.append(point)
+                candidate_sse.append(proposed_score**2 * denominator)
+                no_improvement = 0 if improved else no_improvement + int(
+                    len(candidates) >= args.bayes_initial
+                )
+            elif len(candidates) >= args.bayes_initial:
+                no_improvement += 1
+            proposals.append(
+                {
+                    "proposal": proposal_count,
+                    "validation_date": day.isoformat(),
+                    "validation_days_available": len(validation_seen),
+                    "method": method,
+                    "validation_rmse_kw": proposed_score,
+                    "candidate_early_stopped": candidate_stopped,
+                    "improved": improved,
+                    "parameters": asdict(point),
+                }
+            )
+            print(f"[{day}] 累计验证RMSE={proposed_score:.4f} kW")
+            if len(candidates) >= args.bayes_initial and no_improvement >= args.bayes_patience:
+                search_stopped = True
+                print(f"连续{args.bayes_patience}个候选无显著改善，停止寻优。")
+
+        scores = np.sqrt(np.asarray(candidate_sse) / denominator)
+        selected_index = int(np.argmin(scores))
+        if len(validation_seen) >= args.bayes_initial:
+            current = candidates[selected_index]
+        selection_history.append(
+            {
+                "date": day.isoformat(),
+                "validation_days_available": len(validation_seen),
+                "selected_validation_rmse_kw": float(scores[selected_index]),
+                "selected_parameters": asdict(current),
+            }
+        )
+
+    forward = np.asarray(all_forecasts, dtype=float)
+    final_metrics = {
+        label: _load_metrics(historical.load_kw[indices], forward[indices])
+        for label, indices in groups.items()
+    }
+    baseline_metrics: dict[str, dict[str, float]] = {}
+    for label, indices in groups.items():
+        forecast, _, stopped = _predict_load_indices(
+            baseline,
+            historical,
+            default_point.config(),
+            indices,
+            training_indices,
+        )
+        if stopped or forecast is None:
+            raise RuntimeError("最终评价不应提前停止。")
+        baseline_metrics[label] = _load_metrics(historical.load_kw[indices], forecast)
+    report = {
+        "data_split": {
+            "rule": "训练、训练、训练、验证、训练、测试",
+            "counts": {label: len(indices) for label, indices in groups.items()},
+            "strict_training_freeze": True,
+            "test_data_used_in_optimization": False,
+        },
+        "optimization": {
+            "method": "strict forward Gaussian-process Bayesian optimization",
+            "objective": "截至当前日期的累计验证集RMSE",
+            "early_stopping_patience": args.bayes_patience,
+            "minimum_improvement_kw": args.bayes_min_delta,
+            "maximum_proposals": args.bayes_trials,
+            "completed_proposals": proposal_count,
+            "search_early_stopped": search_stopped,
+            "seed": args.bayes_seed,
+        },
+        "final_selected_parameters": asdict(current),
+        "baseline_metrics": baseline_metrics,
+        "metrics": final_metrics,
+        "proposals": proposals,
+        "selection_history": selection_history,
+    }
+    args.bayes_report.parent.mkdir(parents=True, exist_ok=True)
+    args.bayes_report.write_text(
+        json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    for label in ("训练集", "验证集", "测试集"):
+        values = final_metrics[label]
+        print(
+            f"{label}：MAE={values['mae_kw']:.4f} kW，"
+            f"RMSE={values['rmse_kw']:.4f} kW，R2={values['r2']:.6f}"
+        )
+    print(f"实验报告：{args.bayes_report.resolve()}")
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="C题问题二滚动预测与购电线性规划")
     parser.add_argument("--baseline", type=Path, default=DEFAULT_BASELINE)
@@ -954,15 +1572,40 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--template", type=Path, default=DEFAULT_TEMPLATE)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--summary", type=Path, default=DEFAULT_SUMMARY)
+    parser.add_argument("--split-report", type=Path, default=DEFAULT_SPLIT_REPORT)
+    parser.add_argument("--train-end", type=date.fromisoformat, default=date(2025, 7, 31))
+    parser.add_argument(
+        "--validation-end", type=date.fromisoformat, default=date(2025, 9, 30)
+    )
+    parser.add_argument(
+        "--bayes-optimize",
+        action="store_true",
+        help="执行严格前向贝叶斯参数寻优，不生成正式购电结果表。",
+    )
+    parser.add_argument("--bayes-trials", type=int, default=40)
+    parser.add_argument("--bayes-initial", type=int, default=10)
+    parser.add_argument("--bayes-patience", type=int, default=12)
+    parser.add_argument("--bayes-min-delta", type=float, default=0.05)
+    parser.add_argument("--bayes-candidate-pool", type=int, default=2000)
+    parser.add_argument("--bayes-seed", type=int, default=2026)
+    parser.add_argument("--bayes-report", type=Path, default=DEFAULT_BAYES_REPORT)
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
+    if args.bayes_optimize:
+        run_load_bayesian_optimization(args)
+        return
     cfg = Config()
     baseline, chronological_order = read_baseline(args.baseline)
     historical = read_historical_data(args.load, args.pv, chronological_order)
-    results = simulate_year(baseline, historical, cfg)
+    split = DatasetSplit(args.train_end, args.validation_end)
+    groups = split.cycle_labels(historical.dates)
+    training_indices = set(groups["训练集"])
+    results = simulate_year(
+        baseline, historical, cfg, training_indices=training_indices
+    )
     validate_year(historical, results, cfg)
     write_result_workbook(
         args.template,
@@ -973,6 +1616,7 @@ def main() -> None:
         cfg,
     )
     write_daily_summary(args.summary, historical, results)
+    write_split_evaluation(args.split_report, historical, results, split)
     print_summary(historical, results, args.output, args.summary)
 
 

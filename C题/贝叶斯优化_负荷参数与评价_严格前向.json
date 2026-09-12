@@ -1,0 +1,1448 @@
+{
+  "data_split": {
+    "rule": "训练、训练、训练、验证、训练、测试",
+    "counts": {
+      "训练集": 244,
+      "验证集": 61,
+      "测试集": 60
+    },
+    "strict_training_freeze": true,
+    "per_day_fit_uses_only_prior_training_dates": true,
+    "test_data_used_in_optimization": false,
+    "validation_feedback_rule": "验证日完成预测后才可用于后续日期寻优",
+    "future_validation_data_used": false
+  },
+  "optimization": {
+    "method": "strict forward Gaussian-process Bayesian optimization",
+    "objective": "截至当前日期的累计验证集RMSE",
+    "early_stopping_patience": 10,
+    "minimum_improvement_kw": 0.05,
+    "maximum_proposals": 30,
+    "completed_proposals": 30,
+    "search_early_stopped": false,
+    "seed": 2026
+  },
+  "final_selected_parameters": {
+    "history_days": 35,
+    "half_life_days": 22.86236550087216,
+    "same_weekday_multiplier": 1.7054409173409268,
+    "wavelet_level": 2,
+    "annual_harmonics": 3,
+    "load_ridge_lambda": 0.0010398473604926101,
+    "dynamic_load_blend": 0.8157826442179166
+  },
+  "baseline_metrics": {
+    "训练集": {
+      "mae_kw": 436.48175926021645,
+      "rmse_kw": 560.9066215992787,
+      "r2": 0.8422977911080639
+    },
+    "验证集": {
+      "mae_kw": 402.7139653328235,
+      "rmse_kw": 526.0971083280572,
+      "r2": 0.8617693018986069
+    },
+    "测试集": {
+      "mae_kw": 424.9727448187755,
+      "rmse_kw": 545.5389844830308,
+      "r2": 0.8491210268654247
+    }
+  },
+  "metrics": {
+    "训练集": {
+      "mae_kw": 277.2480880039648,
+      "rmse_kw": 401.32415237563396,
+      "r2": 0.9192677164814878
+    },
+    "验证集": {
+      "mae_kw": 258.9597002385799,
+      "rmse_kw": 386.31394345051336,
+      "r2": 0.9254661698742843
+    },
+    "测试集": {
+      "mae_kw": 261.81061881496515,
+      "rmse_kw": 380.92754162403884,
+      "r2": 0.9264365843972789
+    }
+  },
+  "proposals": [
+    {
+      "proposal": 2,
+      "validation_date": "2025-01-04",
+      "validation_days_available": 1,
+      "method": "随机初始化",
+      "validation_rmse_kw": 1359.6921050270732,
+      "candidate_early_stopped": false,
+      "improved": false,
+      "parameters": {
+        "history_days": 22,
+        "half_life_days": 20.277655474309174,
+        "same_weekday_multiplier": 2.336342005717426,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 34.16864219275315,
+        "dynamic_load_blend": 0.9241150693417393
+      }
+    },
+    {
+      "proposal": 3,
+      "validation_date": "2025-01-10",
+      "validation_days_available": 2,
+      "method": "随机初始化",
+      "validation_rmse_kw": 1365.8423318456046,
+      "candidate_early_stopped": false,
+      "improved": false,
+      "parameters": {
+        "history_days": 22,
+        "half_life_days": 20.625189672498564,
+        "same_weekday_multiplier": 1.4915138367778464,
+        "wavelet_level": 4,
+        "annual_harmonics": 7,
+        "load_ridge_lambda": 2.825502064851662,
+        "dynamic_load_blend": 0.8021856776632694
+      }
+    },
+    {
+      "proposal": 4,
+      "validation_date": "2025-01-16",
+      "validation_days_available": 3,
+      "method": "随机初始化",
+      "validation_rmse_kw": 1165.1823443812812,
+      "candidate_early_stopped": false,
+      "improved": true,
+      "parameters": {
+        "history_days": 38,
+        "half_life_days": 25.29917197614039,
+        "same_weekday_multiplier": 2.241902727000516,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.003840001534395503,
+        "dynamic_load_blend": 0.6206534746761987
+      }
+    },
+    {
+      "proposal": 5,
+      "validation_date": "2025-01-22",
+      "validation_days_available": 4,
+      "method": "随机初始化",
+      "validation_rmse_kw": 1110.7351408049517,
+      "candidate_early_stopped": false,
+      "improved": false,
+      "parameters": {
+        "history_days": 34,
+        "half_life_days": 20.905876752760076,
+        "same_weekday_multiplier": 0.06420241183403286,
+        "wavelet_level": 2,
+        "annual_harmonics": 4,
+        "load_ridge_lambda": 0.0023322934848437576,
+        "dynamic_load_blend": 0.6758926968048422
+      }
+    },
+    {
+      "proposal": 6,
+      "validation_date": "2025-01-28",
+      "validation_days_available": 5,
+      "method": "随机初始化",
+      "validation_rmse_kw": 1012.3950430137527,
+      "candidate_early_stopped": false,
+      "improved": false,
+      "parameters": {
+        "history_days": 34,
+        "half_life_days": 11.099770601119046,
+        "same_weekday_multiplier": 1.0470806061810978,
+        "wavelet_level": 4,
+        "annual_harmonics": 7,
+        "load_ridge_lambda": 1.7659066287725718,
+        "dynamic_load_blend": 0.47608046293383377
+      }
+    },
+    {
+      "proposal": 7,
+      "validation_date": "2025-02-03",
+      "validation_days_available": 6,
+      "method": "随机初始化",
+      "validation_rmse_kw": 882.7324647655519,
+      "candidate_early_stopped": false,
+      "improved": false,
+      "parameters": {
+        "history_days": 58,
+        "half_life_days": 18.21118911156873,
+        "same_weekday_multiplier": 2.1638136980997604,
+        "wavelet_level": 4,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 7.44670399275619,
+        "dynamic_load_blend": 0.4510562618098961
+      }
+    },
+    {
+      "proposal": 8,
+      "validation_date": "2025-02-09",
+      "validation_days_available": 7,
+      "method": "随机初始化",
+      "validation_rmse_kw": 835.1155430133786,
+      "candidate_early_stopped": false,
+      "improved": false,
+      "parameters": {
+        "history_days": 26,
+        "half_life_days": 21.922704016523095,
+        "same_weekday_multiplier": 1.1394598945367884,
+        "wavelet_level": 2,
+        "annual_harmonics": 5,
+        "load_ridge_lambda": 0.0021006057661267638,
+        "dynamic_load_blend": 0.7849925266867557
+      }
+    },
+    {
+      "proposal": 9,
+      "validation_date": "2025-02-15",
+      "validation_days_available": 8,
+      "method": "贝叶斯期望改进",
+      "validation_rmse_kw": 767.9619461784906,
+      "candidate_early_stopped": true,
+      "improved": false,
+      "parameters": {
+        "history_days": 36,
+        "half_life_days": 27.910030053200444,
+        "same_weekday_multiplier": 2.1895932504091546,
+        "wavelet_level": 2,
+        "annual_harmonics": 4,
+        "load_ridge_lambda": 0.00329571082973109,
+        "dynamic_load_blend": 0.593972912951868
+      }
+    },
+    {
+      "proposal": 10,
+      "validation_date": "2025-02-21",
+      "validation_days_available": 9,
+      "method": "贝叶斯期望改进",
+      "validation_rmse_kw": 730.990476753263,
+      "candidate_early_stopped": true,
+      "improved": false,
+      "parameters": {
+        "history_days": 36,
+        "half_life_days": 20.441329493456536,
+        "same_weekday_multiplier": 1.9588822240690824,
+        "wavelet_level": 2,
+        "annual_harmonics": 5,
+        "load_ridge_lambda": 0.0009828811415393127,
+        "dynamic_load_blend": 0.5957990325208011
+      }
+    },
+    {
+      "proposal": 11,
+      "validation_date": "2025-02-27",
+      "validation_days_available": 10,
+      "method": "贝叶斯期望改进",
+      "validation_rmse_kw": 704.5223063698502,
+      "candidate_early_stopped": true,
+      "improved": false,
+      "parameters": {
+        "history_days": 38,
+        "half_life_days": 25.130309360584327,
+        "same_weekday_multiplier": 1.2749607997572654,
+        "wavelet_level": 2,
+        "annual_harmonics": 4,
+        "load_ridge_lambda": 0.00042445203809255637,
+        "dynamic_load_blend": 0.660768180919697
+      }
+    },
+    {
+      "proposal": 12,
+      "validation_date": "2025-03-05",
+      "validation_days_available": 11,
+      "method": "贝叶斯期望改进",
+      "validation_rmse_kw": 664.529090040268,
+      "candidate_early_stopped": true,
+      "improved": false,
+      "parameters": {
+        "history_days": 38,
+        "half_life_days": 28.69857248671308,
+        "same_weekday_multiplier": 1.7184012051826096,
+        "wavelet_level": 1,
+        "annual_harmonics": 5,
+        "load_ridge_lambda": 0.0006556089447981469,
+        "dynamic_load_blend": 0.6204590351662436
+      }
+    },
+    {
+      "proposal": 13,
+      "validation_date": "2025-03-11",
+      "validation_days_available": 12,
+      "method": "贝叶斯期望改进",
+      "validation_rmse_kw": 626.5053843419244,
+      "candidate_early_stopped": false,
+      "improved": true,
+      "parameters": {
+        "history_days": 27,
+        "half_life_days": 27.866925493061643,
+        "same_weekday_multiplier": 2.0302869528791616,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.002040174751235714,
+        "dynamic_load_blend": 0.6470383902370724
+      }
+    },
+    {
+      "proposal": 14,
+      "validation_date": "2025-03-17",
+      "validation_days_available": 13,
+      "method": "贝叶斯期望改进",
+      "validation_rmse_kw": 616.5366649983757,
+      "candidate_early_stopped": true,
+      "improved": false,
+      "parameters": {
+        "history_days": 33,
+        "half_life_days": 25.754836999240354,
+        "same_weekday_multiplier": 1.485366412278093,
+        "wavelet_level": 2,
+        "annual_harmonics": 5,
+        "load_ridge_lambda": 0.0001714136022577465,
+        "dynamic_load_blend": 0.6376884794652682
+      }
+    },
+    {
+      "proposal": 15,
+      "validation_date": "2025-03-23",
+      "validation_days_available": 14,
+      "method": "贝叶斯期望改进",
+      "validation_rmse_kw": 594.330129615475,
+      "candidate_early_stopped": true,
+      "improved": false,
+      "parameters": {
+        "history_days": 26,
+        "half_life_days": 28.81625564892608,
+        "same_weekday_multiplier": 2.6350843074275936,
+        "wavelet_level": 2,
+        "annual_harmonics": 4,
+        "load_ridge_lambda": 0.0029934435241016797,
+        "dynamic_load_blend": 0.6796290218222958
+      }
+    },
+    {
+      "proposal": 16,
+      "validation_date": "2025-03-29",
+      "validation_days_available": 15,
+      "method": "贝叶斯期望改进",
+      "validation_rmse_kw": 585.9451265094245,
+      "candidate_early_stopped": true,
+      "improved": false,
+      "parameters": {
+        "history_days": 29,
+        "half_life_days": 25.423356644667024,
+        "same_weekday_multiplier": 1.6693767534436126,
+        "wavelet_level": 1,
+        "annual_harmonics": 4,
+        "load_ridge_lambda": 0.0015027746300282612,
+        "dynamic_load_blend": 0.5929557581170484
+      }
+    },
+    {
+      "proposal": 17,
+      "validation_date": "2025-04-04",
+      "validation_days_available": 16,
+      "method": "贝叶斯期望改进",
+      "validation_rmse_kw": 574.7063279544192,
+      "candidate_early_stopped": true,
+      "improved": false,
+      "parameters": {
+        "history_days": 25,
+        "half_life_days": 28.402230620818848,
+        "same_weekday_multiplier": 2.015443553783988,
+        "wavelet_level": 2,
+        "annual_harmonics": 4,
+        "load_ridge_lambda": 0.0010178447123018147,
+        "dynamic_load_blend": 0.6653417464111403
+      }
+    },
+    {
+      "proposal": 18,
+      "validation_date": "2025-04-10",
+      "validation_days_available": 17,
+      "method": "贝叶斯期望改进",
+      "validation_rmse_kw": 559.7344628916769,
+      "candidate_early_stopped": true,
+      "improved": false,
+      "parameters": {
+        "history_days": 32,
+        "half_life_days": 29.491418473957875,
+        "same_weekday_multiplier": 1.3318930229693189,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0005108534050241773,
+        "dynamic_load_blend": 0.5785280652153411
+      }
+    },
+    {
+      "proposal": 19,
+      "validation_date": "2025-04-16",
+      "validation_days_available": 18,
+      "method": "贝叶斯期望改进",
+      "validation_rmse_kw": 553.130169052262,
+      "candidate_early_stopped": true,
+      "improved": false,
+      "parameters": {
+        "history_days": 34,
+        "half_life_days": 21.454647339300895,
+        "same_weekday_multiplier": 1.8865251523824533,
+        "wavelet_level": 2,
+        "annual_harmonics": 5,
+        "load_ridge_lambda": 0.004658961669562463,
+        "dynamic_load_blend": 0.6321923418212483
+      }
+    },
+    {
+      "proposal": 20,
+      "validation_date": "2025-04-22",
+      "validation_days_available": 19,
+      "method": "贝叶斯期望改进",
+      "validation_rmse_kw": 505.3689172251223,
+      "candidate_early_stopped": false,
+      "improved": true,
+      "parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "proposal": 21,
+      "validation_date": "2025-04-28",
+      "validation_days_available": 20,
+      "method": "贝叶斯期望改进",
+      "validation_rmse_kw": 499.1764645372126,
+      "candidate_early_stopped": true,
+      "improved": false,
+      "parameters": {
+        "history_days": 35,
+        "half_life_days": 23.222929692329895,
+        "same_weekday_multiplier": 2.0191208718755114,
+        "wavelet_level": 2,
+        "annual_harmonics": 4,
+        "load_ridge_lambda": 0.0002646343917296072,
+        "dynamic_load_blend": 0.7297630474372083
+      }
+    },
+    {
+      "proposal": 22,
+      "validation_date": "2025-05-04",
+      "validation_days_available": 21,
+      "method": "贝叶斯期望改进",
+      "validation_rmse_kw": 489.65819906885383,
+      "candidate_early_stopped": true,
+      "improved": false,
+      "parameters": {
+        "history_days": 27,
+        "half_life_days": 21.667827527719396,
+        "same_weekday_multiplier": 1.192302723369859,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.00028192230761832447,
+        "dynamic_load_blend": 0.6510551441845648
+      }
+    },
+    {
+      "proposal": 23,
+      "validation_date": "2025-05-10",
+      "validation_days_available": 22,
+      "method": "贝叶斯期望改进",
+      "validation_rmse_kw": 482.74657932439374,
+      "candidate_early_stopped": true,
+      "improved": false,
+      "parameters": {
+        "history_days": 32,
+        "half_life_days": 20.315713663496396,
+        "same_weekday_multiplier": 2.1955456879618134,
+        "wavelet_level": 2,
+        "annual_harmonics": 2,
+        "load_ridge_lambda": 0.00029722384082682163,
+        "dynamic_load_blend": 0.667273073952496
+      }
+    },
+    {
+      "proposal": 24,
+      "validation_date": "2025-05-16",
+      "validation_days_available": 23,
+      "method": "贝叶斯期望改进",
+      "validation_rmse_kw": 467.2470493073204,
+      "candidate_early_stopped": false,
+      "improved": true,
+      "parameters": {
+        "history_days": 23,
+        "half_life_days": 22.16005337031691,
+        "same_weekday_multiplier": 3.4204172241648596,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.00010683581757667908,
+        "dynamic_load_blend": 0.726727237291571
+      }
+    },
+    {
+      "proposal": 25,
+      "validation_date": "2025-05-22",
+      "validation_days_available": 24,
+      "method": "贝叶斯期望改进",
+      "validation_rmse_kw": 464.95758626067175,
+      "candidate_early_stopped": true,
+      "improved": false,
+      "parameters": {
+        "history_days": 31,
+        "half_life_days": 23.32485070688712,
+        "same_weekday_multiplier": 2.21788749678218,
+        "wavelet_level": 1,
+        "annual_harmonics": 5,
+        "load_ridge_lambda": 0.00013448551839407744,
+        "dynamic_load_blend": 0.9134365719429376
+      }
+    },
+    {
+      "proposal": 26,
+      "validation_date": "2025-05-28",
+      "validation_days_available": 25,
+      "method": "贝叶斯期望改进",
+      "validation_rmse_kw": 457.34421184316875,
+      "candidate_early_stopped": true,
+      "improved": false,
+      "parameters": {
+        "history_days": 39,
+        "half_life_days": 23.79516540978188,
+        "same_weekday_multiplier": 2.8156429636198843,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.00012459446856196457,
+        "dynamic_load_blend": 0.660695177736512
+      }
+    },
+    {
+      "proposal": 27,
+      "validation_date": "2025-06-03",
+      "validation_days_available": 26,
+      "method": "贝叶斯期望改进",
+      "validation_rmse_kw": 453.2567348015862,
+      "candidate_early_stopped": true,
+      "improved": false,
+      "parameters": {
+        "history_days": 31,
+        "half_life_days": 28.368191787105616,
+        "same_weekday_multiplier": 1.9272969443161214,
+        "wavelet_level": 2,
+        "annual_harmonics": 5,
+        "load_ridge_lambda": 0.0005584137687230843,
+        "dynamic_load_blend": 0.7959260394748682
+      }
+    },
+    {
+      "proposal": 28,
+      "validation_date": "2025-06-09",
+      "validation_days_available": 27,
+      "method": "贝叶斯期望改进",
+      "validation_rmse_kw": 453.19352917393275,
+      "candidate_early_stopped": true,
+      "improved": false,
+      "parameters": {
+        "history_days": 30,
+        "half_life_days": 25.224756201226807,
+        "same_weekday_multiplier": 1.7541423559053966,
+        "wavelet_level": 2,
+        "annual_harmonics": 4,
+        "load_ridge_lambda": 0.0001877166325151861,
+        "dynamic_load_blend": 0.6882877027525958
+      }
+    },
+    {
+      "proposal": 29,
+      "validation_date": "2025-06-15",
+      "validation_days_available": 28,
+      "method": "贝叶斯期望改进",
+      "validation_rmse_kw": 443.6892963304604,
+      "candidate_early_stopped": true,
+      "improved": false,
+      "parameters": {
+        "history_days": 34,
+        "half_life_days": 21.121574167060725,
+        "same_weekday_multiplier": 2.849202382648504,
+        "wavelet_level": 2,
+        "annual_harmonics": 2,
+        "load_ridge_lambda": 0.0001250084391408615,
+        "dynamic_load_blend": 0.5897985316306831
+      }
+    },
+    {
+      "proposal": 30,
+      "validation_date": "2025-06-21",
+      "validation_days_available": 29,
+      "method": "贝叶斯期望改进",
+      "validation_rmse_kw": 436.902109827077,
+      "candidate_early_stopped": true,
+      "improved": false,
+      "parameters": {
+        "history_days": 33,
+        "half_life_days": 22.310414438856917,
+        "same_weekday_multiplier": 2.331523376968862,
+        "wavelet_level": 2,
+        "annual_harmonics": 5,
+        "load_ridge_lambda": 0.0010189259185708218,
+        "dynamic_load_blend": 0.6706382105782747
+      }
+    }
+  ],
+  "selection_history": [
+    {
+      "date": "2025-01-04",
+      "validation_days_available": 1,
+      "selected_validation_rmse_kw": 1341.5160879960806,
+      "selected_parameters": {
+        "history_days": 28,
+        "half_life_days": 7.0,
+        "same_weekday_multiplier": 2.0,
+        "wavelet_level": 3,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 3.0,
+        "dynamic_load_blend": 0.65
+      }
+    },
+    {
+      "date": "2025-01-10",
+      "validation_days_available": 2,
+      "selected_validation_rmse_kw": 1363.173278291107,
+      "selected_parameters": {
+        "history_days": 28,
+        "half_life_days": 7.0,
+        "same_weekday_multiplier": 2.0,
+        "wavelet_level": 3,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 3.0,
+        "dynamic_load_blend": 0.65
+      }
+    },
+    {
+      "date": "2025-01-16",
+      "validation_days_available": 3,
+      "selected_validation_rmse_kw": 1165.1823443812812,
+      "selected_parameters": {
+        "history_days": 28,
+        "half_life_days": 7.0,
+        "same_weekday_multiplier": 2.0,
+        "wavelet_level": 3,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 3.0,
+        "dynamic_load_blend": 0.65
+      }
+    },
+    {
+      "date": "2025-01-22",
+      "validation_days_available": 4,
+      "selected_validation_rmse_kw": 1013.5331511241949,
+      "selected_parameters": {
+        "history_days": 28,
+        "half_life_days": 7.0,
+        "same_weekday_multiplier": 2.0,
+        "wavelet_level": 3,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 3.0,
+        "dynamic_load_blend": 0.65
+      }
+    },
+    {
+      "date": "2025-01-28",
+      "validation_days_available": 5,
+      "selected_validation_rmse_kw": 912.0352038292921,
+      "selected_parameters": {
+        "history_days": 28,
+        "half_life_days": 7.0,
+        "same_weekday_multiplier": 2.0,
+        "wavelet_level": 3,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 3.0,
+        "dynamic_load_blend": 0.65
+      }
+    },
+    {
+      "date": "2025-02-03",
+      "validation_days_available": 6,
+      "selected_validation_rmse_kw": 835.8897109289479,
+      "selected_parameters": {
+        "history_days": 28,
+        "half_life_days": 7.0,
+        "same_weekday_multiplier": 2.0,
+        "wavelet_level": 3,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 3.0,
+        "dynamic_load_blend": 0.65
+      }
+    },
+    {
+      "date": "2025-02-09",
+      "validation_days_available": 7,
+      "selected_validation_rmse_kw": 778.2405012566874,
+      "selected_parameters": {
+        "history_days": 28,
+        "half_life_days": 7.0,
+        "same_weekday_multiplier": 2.0,
+        "wavelet_level": 3,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 3.0,
+        "dynamic_load_blend": 0.65
+      }
+    },
+    {
+      "date": "2025-02-15",
+      "validation_days_available": 8,
+      "selected_validation_rmse_kw": 741.6721789960108,
+      "selected_parameters": {
+        "history_days": 38,
+        "half_life_days": 25.29917197614039,
+        "same_weekday_multiplier": 2.241902727000516,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.003840001534395503,
+        "dynamic_load_blend": 0.6206534746761987
+      }
+    },
+    {
+      "date": "2025-02-21",
+      "validation_days_available": 9,
+      "selected_validation_rmse_kw": 717.8012698106738,
+      "selected_parameters": {
+        "history_days": 38,
+        "half_life_days": 25.29917197614039,
+        "same_weekday_multiplier": 2.241902727000516,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.003840001534395503,
+        "dynamic_load_blend": 0.6206534746761987
+      }
+    },
+    {
+      "date": "2025-02-27",
+      "validation_days_available": 10,
+      "selected_validation_rmse_kw": 683.5172357936991,
+      "selected_parameters": {
+        "history_days": 38,
+        "half_life_days": 25.29917197614039,
+        "same_weekday_multiplier": 2.241902727000516,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.003840001534395503,
+        "dynamic_load_blend": 0.6206534746761987
+      }
+    },
+    {
+      "date": "2025-03-05",
+      "validation_days_available": 11,
+      "selected_validation_rmse_kw": 653.497654706973,
+      "selected_parameters": {
+        "history_days": 38,
+        "half_life_days": 25.29917197614039,
+        "same_weekday_multiplier": 2.241902727000516,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.003840001534395503,
+        "dynamic_load_blend": 0.6206534746761987
+      }
+    },
+    {
+      "date": "2025-03-11",
+      "validation_days_available": 12,
+      "selected_validation_rmse_kw": 626.5053843419244,
+      "selected_parameters": {
+        "history_days": 27,
+        "half_life_days": 27.866925493061643,
+        "same_weekday_multiplier": 2.0302869528791616,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.002040174751235714,
+        "dynamic_load_blend": 0.6470383902370724
+      }
+    },
+    {
+      "date": "2025-03-17",
+      "validation_days_available": 13,
+      "selected_validation_rmse_kw": 604.9914156420548,
+      "selected_parameters": {
+        "history_days": 27,
+        "half_life_days": 27.866925493061643,
+        "same_weekday_multiplier": 2.0302869528791616,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.002040174751235714,
+        "dynamic_load_blend": 0.6470383902370724
+      }
+    },
+    {
+      "date": "2025-03-23",
+      "validation_days_available": 14,
+      "selected_validation_rmse_kw": 586.7242471659567,
+      "selected_parameters": {
+        "history_days": 27,
+        "half_life_days": 27.866925493061643,
+        "same_weekday_multiplier": 2.0302869528791616,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.002040174751235714,
+        "dynamic_load_blend": 0.6470383902370724
+      }
+    },
+    {
+      "date": "2025-03-29",
+      "validation_days_available": 15,
+      "selected_validation_rmse_kw": 575.2388900945987,
+      "selected_parameters": {
+        "history_days": 27,
+        "half_life_days": 27.866925493061643,
+        "same_weekday_multiplier": 2.0302869528791616,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.002040174751235714,
+        "dynamic_load_blend": 0.6470383902370724
+      }
+    },
+    {
+      "date": "2025-04-04",
+      "validation_days_available": 16,
+      "selected_validation_rmse_kw": 567.751719504253,
+      "selected_parameters": {
+        "history_days": 27,
+        "half_life_days": 27.866925493061643,
+        "same_weekday_multiplier": 2.0302869528791616,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.002040174751235714,
+        "dynamic_load_blend": 0.6470383902370724
+      }
+    },
+    {
+      "date": "2025-04-10",
+      "validation_days_available": 17,
+      "selected_validation_rmse_kw": 553.2907893228614,
+      "selected_parameters": {
+        "history_days": 27,
+        "half_life_days": 27.866925493061643,
+        "same_weekday_multiplier": 2.0302869528791616,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.002040174751235714,
+        "dynamic_load_blend": 0.6470383902370724
+      }
+    },
+    {
+      "date": "2025-04-16",
+      "validation_days_available": 18,
+      "selected_validation_rmse_kw": 539.5711397455648,
+      "selected_parameters": {
+        "history_days": 27,
+        "half_life_days": 27.866925493061643,
+        "same_weekday_multiplier": 2.0302869528791616,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.002040174751235714,
+        "dynamic_load_blend": 0.6470383902370724
+      }
+    },
+    {
+      "date": "2025-04-22",
+      "validation_days_available": 19,
+      "selected_validation_rmse_kw": 505.3689172251223,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-04-28",
+      "validation_days_available": 20,
+      "selected_validation_rmse_kw": 494.09254942907575,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-05-04",
+      "validation_days_available": 21,
+      "selected_validation_rmse_kw": 484.6020725259716,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-05-10",
+      "validation_days_available": 22,
+      "selected_validation_rmse_kw": 477.12932653816745,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-05-16",
+      "validation_days_available": 23,
+      "selected_validation_rmse_kw": 467.2470493073204,
+      "selected_parameters": {
+        "history_days": 23,
+        "half_life_days": 22.16005337031691,
+        "same_weekday_multiplier": 3.4204172241648596,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.00010683581757667908,
+        "dynamic_load_blend": 0.726727237291571
+      }
+    },
+    {
+      "date": "2025-05-22",
+      "validation_days_available": 24,
+      "selected_validation_rmse_kw": 458.9294385852145,
+      "selected_parameters": {
+        "history_days": 23,
+        "half_life_days": 22.16005337031691,
+        "same_weekday_multiplier": 3.4204172241648596,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.00010683581757667908,
+        "dynamic_load_blend": 0.726727237291571
+      }
+    },
+    {
+      "date": "2025-05-28",
+      "validation_days_available": 25,
+      "selected_validation_rmse_kw": 450.8605408259162,
+      "selected_parameters": {
+        "history_days": 23,
+        "half_life_days": 22.16005337031691,
+        "same_weekday_multiplier": 3.4204172241648596,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.00010683581757667908,
+        "dynamic_load_blend": 0.726727237291571
+      }
+    },
+    {
+      "date": "2025-06-03",
+      "validation_days_available": 26,
+      "selected_validation_rmse_kw": 447.65452688958914,
+      "selected_parameters": {
+        "history_days": 23,
+        "half_life_days": 22.16005337031691,
+        "same_weekday_multiplier": 3.4204172241648596,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.00010683581757667908,
+        "dynamic_load_blend": 0.726727237291571
+      }
+    },
+    {
+      "date": "2025-06-09",
+      "validation_days_available": 27,
+      "selected_validation_rmse_kw": 441.2949547242504,
+      "selected_parameters": {
+        "history_days": 23,
+        "half_life_days": 22.16005337031691,
+        "same_weekday_multiplier": 3.4204172241648596,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.00010683581757667908,
+        "dynamic_load_blend": 0.726727237291571
+      }
+    },
+    {
+      "date": "2025-06-15",
+      "validation_days_available": 28,
+      "selected_validation_rmse_kw": 434.9844483832848,
+      "selected_parameters": {
+        "history_days": 23,
+        "half_life_days": 22.16005337031691,
+        "same_weekday_multiplier": 3.4204172241648596,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.00010683581757667908,
+        "dynamic_load_blend": 0.726727237291571
+      }
+    },
+    {
+      "date": "2025-06-21",
+      "validation_days_available": 29,
+      "selected_validation_rmse_kw": 431.39086879364294,
+      "selected_parameters": {
+        "history_days": 23,
+        "half_life_days": 22.16005337031691,
+        "same_weekday_multiplier": 3.4204172241648596,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.00010683581757667908,
+        "dynamic_load_blend": 0.726727237291571
+      }
+    },
+    {
+      "date": "2025-06-27",
+      "validation_days_available": 30,
+      "selected_validation_rmse_kw": 429.6722375061087,
+      "selected_parameters": {
+        "history_days": 23,
+        "half_life_days": 22.16005337031691,
+        "same_weekday_multiplier": 3.4204172241648596,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.00010683581757667908,
+        "dynamic_load_blend": 0.726727237291571
+      }
+    },
+    {
+      "date": "2025-07-03",
+      "validation_days_available": 31,
+      "selected_validation_rmse_kw": 434.0224127633487,
+      "selected_parameters": {
+        "history_days": 23,
+        "half_life_days": 22.16005337031691,
+        "same_weekday_multiplier": 3.4204172241648596,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.00010683581757667908,
+        "dynamic_load_blend": 0.726727237291571
+      }
+    },
+    {
+      "date": "2025-07-09",
+      "validation_days_available": 32,
+      "selected_validation_rmse_kw": 428.84175385227985,
+      "selected_parameters": {
+        "history_days": 23,
+        "half_life_days": 22.16005337031691,
+        "same_weekday_multiplier": 3.4204172241648596,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.00010683581757667908,
+        "dynamic_load_blend": 0.726727237291571
+      }
+    },
+    {
+      "date": "2025-07-15",
+      "validation_days_available": 33,
+      "selected_validation_rmse_kw": 423.860375812173,
+      "selected_parameters": {
+        "history_days": 23,
+        "half_life_days": 22.16005337031691,
+        "same_weekday_multiplier": 3.4204172241648596,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.00010683581757667908,
+        "dynamic_load_blend": 0.726727237291571
+      }
+    },
+    {
+      "date": "2025-07-21",
+      "validation_days_available": 34,
+      "selected_validation_rmse_kw": 418.9537677521661,
+      "selected_parameters": {
+        "history_days": 23,
+        "half_life_days": 22.16005337031691,
+        "same_weekday_multiplier": 3.4204172241648596,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.00010683581757667908,
+        "dynamic_load_blend": 0.726727237291571
+      }
+    },
+    {
+      "date": "2025-07-27",
+      "validation_days_available": 35,
+      "selected_validation_rmse_kw": 414.03137273108536,
+      "selected_parameters": {
+        "history_days": 23,
+        "half_life_days": 22.16005337031691,
+        "same_weekday_multiplier": 3.4204172241648596,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.00010683581757667908,
+        "dynamic_load_blend": 0.726727237291571
+      }
+    },
+    {
+      "date": "2025-08-02",
+      "validation_days_available": 36,
+      "selected_validation_rmse_kw": 411.525023079563,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-08-08",
+      "validation_days_available": 37,
+      "selected_validation_rmse_kw": 408.4856279890904,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-08-14",
+      "validation_days_available": 38,
+      "selected_validation_rmse_kw": 405.0734692056994,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-08-20",
+      "validation_days_available": 39,
+      "selected_validation_rmse_kw": 401.3887395266876,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-08-26",
+      "validation_days_available": 40,
+      "selected_validation_rmse_kw": 398.15457230153527,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-09-01",
+      "validation_days_available": 41,
+      "selected_validation_rmse_kw": 400.4557883734141,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-09-07",
+      "validation_days_available": 42,
+      "selected_validation_rmse_kw": 397.75522757087185,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-09-13",
+      "validation_days_available": 43,
+      "selected_validation_rmse_kw": 394.972874829662,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-09-19",
+      "validation_days_available": 44,
+      "selected_validation_rmse_kw": 391.9034611123759,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-09-25",
+      "validation_days_available": 45,
+      "selected_validation_rmse_kw": 389.3470689453892,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-10-01",
+      "validation_days_available": 46,
+      "selected_validation_rmse_kw": 386.35054291828465,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-10-07",
+      "validation_days_available": 47,
+      "selected_validation_rmse_kw": 382.94828817586347,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-10-13",
+      "validation_days_available": 48,
+      "selected_validation_rmse_kw": 379.540219018848,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-10-19",
+      "validation_days_available": 49,
+      "selected_validation_rmse_kw": 376.3175623430828,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-10-25",
+      "validation_days_available": 50,
+      "selected_validation_rmse_kw": 374.4449711820062,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-10-31",
+      "validation_days_available": 51,
+      "selected_validation_rmse_kw": 373.4134291881417,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-11-06",
+      "validation_days_available": 52,
+      "selected_validation_rmse_kw": 370.5301980608068,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-11-12",
+      "validation_days_available": 53,
+      "selected_validation_rmse_kw": 367.5751309732202,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-11-18",
+      "validation_days_available": 54,
+      "selected_validation_rmse_kw": 364.7988554313755,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-11-24",
+      "validation_days_available": 55,
+      "selected_validation_rmse_kw": 362.13687235499475,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-11-30",
+      "validation_days_available": 56,
+      "selected_validation_rmse_kw": 359.5553135736345,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-12-06",
+      "validation_days_available": 57,
+      "selected_validation_rmse_kw": 357.50021779531266,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-12-12",
+      "validation_days_available": 58,
+      "selected_validation_rmse_kw": 356.08284520763823,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-12-18",
+      "validation_days_available": 59,
+      "selected_validation_rmse_kw": 353.86796410222803,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-12-24",
+      "validation_days_available": 60,
+      "selected_validation_rmse_kw": 351.42171436203904,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    },
+    {
+      "date": "2025-12-30",
+      "validation_days_available": 61,
+      "selected_validation_rmse_kw": 348.96812557486265,
+      "selected_parameters": {
+        "history_days": 35,
+        "half_life_days": 22.86236550087216,
+        "same_weekday_multiplier": 1.7054409173409268,
+        "wavelet_level": 2,
+        "annual_harmonics": 3,
+        "load_ridge_lambda": 0.0010398473604926101,
+        "dynamic_load_blend": 0.8157826442179166
+      }
+    }
+  ]
+}
