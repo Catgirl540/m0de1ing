@@ -28,6 +28,7 @@ from typing import Iterable
 import numpy as np
 from openpyxl import load_workbook
 
+
 ROOT = Path(__file__).resolve().parent
 DEFAULT_INPUT = ROOT / "C题" / "附件" / "csv" / "附件1.csv"
 DEFAULT_TEMPLATE = ROOT / "C题" / "附件" / "附件5" / "result1.xlsx"
@@ -114,6 +115,7 @@ def read_input(path: Path) -> InputData:
         rows = list(csv.reader(file))
     if len(rows) != 145 or len(rows[0]) < 4:
         raise ValueError("附件1应包含1行表头、144行数据和至少4列。")
+
     times, price, load, pv = [], [], [], []
     for row_number, row in enumerate(rows[1:], start=2):
         if len(row) < 4:

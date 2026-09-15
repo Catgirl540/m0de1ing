@@ -80,7 +80,6 @@ class Config:
     def max_discharge_kwh(self) -> float:
         return self.max_discharge_power_kw * self.dt_hours
 
-
 BAYESIAN_LOAD_PARAMETER_SCHEDULE: tuple[
     tuple[date, dict[str, float | int]], ...
 ] = (

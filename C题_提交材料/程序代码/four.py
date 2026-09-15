@@ -14,6 +14,7 @@
 # 贝叶斯寻优：python four.py --bayes-optimize
 # 无Hampel消融：python four.py --bayes-optimize --bayes-disable-hampel
 
+
 from __future__ import annotations
 
 import argparse
@@ -64,7 +65,6 @@ class Config(three.Config):
     minimum_bias_pairs: int = 7
     default_bias_weight: float = 0.60
     use_bayesian_price_schedule: bool = True
-
 
 _PRICE_PARAMETER_SCHEDULE = (
     (
@@ -142,7 +142,6 @@ class PriceForecast:
     wavelet_residual: np.ndarray
     previous_day_bias: np.ndarray
     bias_weight: float
-
 
 @dataclass
 class Daily42:
@@ -391,7 +390,6 @@ def prepare_daily_price_forecasts(
         )
     return current, following
 
-
 def simulate_42(
     baseline: two.BaselineData,
     historical: two.HistoricalData,
@@ -483,7 +481,6 @@ def simulate_42(
         if (day_index + 1) % 60 == 0 or day_index == 364:
             print(f"问题4-2已完成{current_date}，SOC={soc:.2f} kWh")
     return results
-
 
 def price_horizon(
     day_index: int,
@@ -751,7 +748,6 @@ def make_workbook_payload(
         },
     }
 
-
 def write_csv_outputs(
     results42: list[Daily42],
     summaries43: list[three.StrategySummary],
@@ -852,7 +848,6 @@ def _q42_period_metrics(results: list[Daily42]) -> dict[str, float]:
         "总购电费(元)": plan_cost + emergency_cost,
     }
 
-
 def write_split_evaluation(
     path: Path,
     prices: PriceData,
@@ -940,7 +935,6 @@ def write_split_evaluation(
     print(f"  冻结策略后的测试集费用：{test['总购电费(元)']:.4f} 元")
     print(f"数据集检验报告：{path.resolve()}")
 
-
 def write_workbooks(
     payload: dict[str, object], args: argparse.Namespace
 ) -> None:
@@ -1021,7 +1015,6 @@ def write_workbooks(
     build(args.template42, args.output42, payload["q42"], q43=False)
     build(args.template43, args.output43, payload["q43"], q43=True)
 
-
 def print_summary(
     results42: list[Daily42],
     summaries43: list[three.StrategySummary],
@@ -1081,7 +1074,6 @@ def _default_price_search_point() -> PriceSearchPoint:
         3.0,
         0.0,
     )
-
 
 def _decode_price_point(
     unit: np.ndarray, disable_hampel: bool
@@ -1164,7 +1156,6 @@ def _hampel_filter_price_history(
             replacements += int(np.count_nonzero(mask))
     return filtered, replacements
 
-
 def _search_price_history_profile(
     prices: PriceData,
     cutoff: int,
@@ -1194,7 +1185,6 @@ def _search_price_history_profile(
     )
     weights *= 1.0 + point.same_weekday_multiplier * same_weekday
     return np.average(matrix, axis=0, weights=weights), replacements
-
 
 def _search_price_bases(
     prices: PriceData,
@@ -1239,7 +1229,6 @@ def _search_bias_weight(
     if denominator <= 1.0e-12:
         return point.default_bias_weight
     return float(np.clip(np.dot(x, y) / denominator, 0.0, 1.0))
-
 
 def _search_price_forecasts(
     prices: PriceData,
@@ -1321,7 +1310,6 @@ def run_price_bayesian_optimization(args: argparse.Namespace) -> None:
     proposal_count = 1
     no_improvement = 0
     search_stopped = False
-
     print("严格前向电价贝叶斯优化：测试集不参与参数搜索。")
     for index, day in enumerate(prices.dates):
         forward_prediction.append(predictions[current_index][index])
@@ -1491,7 +1479,6 @@ def run_price_bayesian_optimization(args: argparse.Namespace) -> None:
     print(f"实验报告：{report_path.resolve()}")
     print(f"逐日评价：{csv_path.resolve()}")
 
-
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="C题问题四傅里叶—小波动态电价预测与LP/MPC购电策略"
@@ -1540,7 +1527,6 @@ def parse_args() -> argparse.Namespace:
         help="执行关闭Hampel滤波的贝叶斯消融实验。",
     )
     return parser.parse_args()
-
 
 def main() -> None:
     args = parse_args()

@@ -14,7 +14,6 @@
 # 依赖：two.py、numpy、scipy、openpyxl
 # 运行：python three.py
 
-
 from __future__ import annotations
 
 import argparse
@@ -807,7 +806,6 @@ def write_result_workbook(
         if temporary.exists():
             temporary.unlink()
 
-
 def write_daily_summary(path: Path, summary: StrategySummary) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8-sig", newline="") as file:
@@ -854,7 +852,6 @@ def write_daily_summary(path: Path, summary: StrategySummary) -> None:
                 ]
             )
 
-
 def write_strategy_comparison(path: Path, summaries: list[StrategySummary]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     baseline_total = summaries[0].total_cost_yuan
@@ -896,6 +893,7 @@ def write_strategy_comparison(path: Path, summaries: list[StrategySummary]) -> N
                     f"{saving / baseline_total:.8%}",
                 ]
             )
+
 
 def strategy_period_metrics(
     summary: StrategySummary,
@@ -953,7 +951,6 @@ def select_strategy_on_validation(
         ),
     )
 
-
 def write_split_evaluation(
     path: Path,
     summaries: list[StrategySummary],
@@ -982,7 +979,6 @@ def write_split_evaluation(
     print(f"  验证集选定策略：{selected.name}，验证集费用={validation_cost:.4f} 元")
     print(f"  冻结策略后的测试集费用：{test_cost:.4f} 元")
     print(f"数据集检验报告：{path.resolve()}")
-
 
 def print_summary(
     summaries: list[StrategySummary], selected: StrategySummary, output: Path
@@ -1030,7 +1026,6 @@ def parse_args() -> argparse.Namespace:
         "--validation-end", type=date.fromisoformat, default=date(2025, 9, 30)
     )
     return parser.parse_args()
-
 
 def main() -> None:
     args = parse_args()
